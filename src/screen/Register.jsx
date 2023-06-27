@@ -3,17 +3,30 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
   Pressable,
   SafeAreaView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import CheckBox from 'react-native-check-box';
 import React from 'react';
+import {Checkbox, TextInput} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/Feather';
 
 const Register = () => {
   const navigation = useNavigation();
+  const [checked, setChecked] = React.useState(false);
 
+  const [text, setText] = React.useState('');
+  const [secureTextEntry, setSecureTextEntry] = React.useState(true);
+  const [textConfrimPassword, setTextConfrimPassword] = React.useState('');
+  const [secureTextEntryConfrimPassword, setSecureTextEntryConfrimPassword] =
+    React.useState(true);
+
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+  const toggleSecureEntryConfrimPassword = () => {
+    setSecureTextEntryConfrimPassword(!secureTextEntryConfrimPassword);
+  };
   return (
     <View style={styles.wrapper}>
       <View style={styles.textTitle}>
@@ -40,23 +53,44 @@ const Register = () => {
           <SafeAreaView>
             <TextInput
               style={styles.input}
-              secureTextEntry
-              placeholder="password"
-              placeholderTextColor="gray"
+              placeholder="Password"
+              secureTextEntry={secureTextEntryConfrimPassword}
+              value={textConfrimPassword}
+              onChangeText={setTextConfrimPassword}
+              right={
+                <TextInput.Icon
+                  name={secureTextEntryConfrimPassword ? 'eye' : 'eye-off'}
+                  color="red"
+                  onPress={toggleSecureEntryConfrimPassword}
+                />
+              }
             />
           </SafeAreaView>
         </SafeAreaView>
         <SafeAreaView>
           <TextInput
             style={styles.input}
-            secureTextEntry
-            placeholder="confirm password"
-            placeholderTextColor="gray"
+            placeholder="Confirm Password"
+            secureTextEntry={secureTextEntry}
+            value={text}
+            onChangeText={setText}
+            right={
+              <TextInput.Icon
+                name={secureTextEntry ? 'eye' : 'eye-off'}
+                color="red"
+                onPress={toggleSecureEntry}
+              />
+            }
           />
         </SafeAreaView>
       </View>
       <View style={styles.accept}>
-        <CheckBox style={styles.ck} />
+        <Checkbox
+          status={text ? 'checked' : 'unchecked'}
+          onPress={() => {
+            setChecked(!text);
+          }}
+        />
         <Text style={{color: 'black', fontFamily: 'Poopins'}}>
           Accept terms and condition
         </Text>
