@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   wrapper: {height: '100%'},
 
   input: {
-    height: 40,
+    height: 55,
     margin: 12,
     borderWidth: 1,
     padding: 10,
@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingBottom: 10,
     paddingTop: 10,
-    maxHeight: 50,
   },
   textTitle: {
     color: 'black',
