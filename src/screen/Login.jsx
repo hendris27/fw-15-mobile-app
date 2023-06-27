@@ -1,14 +1,11 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-} from 'react-native';
+import {View, Text, TouchableOpacity, TextInput} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
+import styles from '../assets/css/globalStyles';
+import Iconfacebook from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/AntDesign';
 
-const Register = () => {
+const Login = () => {
   const navigation = useNavigation();
 
   return (
@@ -19,13 +16,14 @@ const Register = () => {
           <Text style={styles.textColor}>Hi, Welcome back to Urticket! </Text>
         </View>
       </View>
-      <View />
+
       <View style={styles.parentInput}>
         <View>
           <TextInput
             style={styles.input}
             placeholder="email"
             placeholderTextColor="gray"
+            keyboardType="email-address"
           />
         </View>
         <View>
@@ -49,87 +47,12 @@ const Register = () => {
           <Text style={styles.textColor}>Login With</Text>
         </View>
         <View style={styles.iconloginWith}>
-          <View>
-            <Text>1</Text>
-          </View>
-          <View>
-            <Text>2</Text>
-          </View>
-          <View>
-            <Text>3</Text>
-          </View>
+          <Iconfacebook name="facebook" color="blue" size={40} />
+          <Icon name="google" color="green" size={40} />
         </View>
       </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  wrapper: {
-    height: '100%',
-    paddingRight: 10,
-    paddingLeft: 10,
-  },
-  btn: {
-    width: '100%',
-    marginTop: 30,
-    backgroundColor: '#0E8388',
-    height: 55,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 20,
-  },
-  btnText: {
-    color: 'white',
-    fontSize: 20,
-  },
-  parentInput: {
-    flexDirection: 'column',
-    rowGap: 20,
-  },
-  input: {
-    height: 55,
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 10,
-    color: 'black',
-    fontSize: 18,
-    marginTop: 20,
-  },
-  textTitle: {
-    color: 'black',
-    marginTop: 30,
-    flexDirection: 'coloumn',
-    rowGap: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: 'black',
-  },
-  textSubTitle: {
-    flexDirection: 'row',
-    columnGap: 5,
-  },
-  textColor: {
-    color: 'black',
-  },
-  textForgotPassword: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: 'black',
-    textAlign: 'right',
-    paddingRight: 10,
-  },
-  loginWith: {
-    flexBasis: 'coloumn',
-    rowGap: 10,
-    marginTop: 40,
-    alignItems: 'center',
-  },
-  iconloginWith: {
-    flexDirection: 'row',
-  },
-});
-
-export default Register;
+export default Login;

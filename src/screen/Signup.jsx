@@ -1,10 +1,8 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, TextInput} from 'react-native';
 import {Checkbox} from 'react-native-paper';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import styles from '../assets/css/globalStyles';
-import Input from '../components/Input';
-import Button from '../components/Button';
 
 const Register = () => {
   const navigation = useNavigation();
@@ -24,11 +22,29 @@ const Register = () => {
       </View>
 
       <View style={styles.parentInput}>
-        <Input placeholder="Email" keyboardType="email-address" />
-
-        <Input placeholder="Password" secureTextEntry />
-
-        <Input placeholder="Confirm Password" secureTextEntry />
+        <View style={styles.input}>
+          <TextInput
+            style={styles.inputComponents}
+            placeholder="Email"
+            placeholderTextColor="gray"
+          />
+        </View>
+        <View>
+          <TextInput
+            secureTextEntry
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="gray"
+          />
+        </View>
+        <View>
+          <TextInput
+            secureTextEntry
+            style={styles.input}
+            placeholder="Confirm Password"
+            placeholderTextColor="gray"
+          />
+        </View>
       </View>
       <View style={styles.textSubTitle}>
         <Checkbox
@@ -39,11 +55,10 @@ const Register = () => {
         />
         <Text style={styles.textColor}>Accept terms and condition</Text>
       </View>
-      <View>
-        <Button>
-          <Text>Sign Up</Text>
-        </Button>
-      </View>
+
+      <TouchableOpacity style={styles.btn}>
+        <Text style={styles.btnText}>Register</Text>
+      </TouchableOpacity>
     </View>
   );
 };
