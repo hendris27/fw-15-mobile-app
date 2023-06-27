@@ -5,14 +5,16 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import * as React from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faBars} from '@fortawesome/free-solid-svg-icons/faBars';
 import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
 import {useNavigation} from '@react-navigation/native';
+import {IconButton, Checkbox} from 'react-native-paper';
 
 const Index = () => {
   const navigation = useNavigation();
+  const [checked, setChecked] = React.useState(false);
 
   return (
     <View style={styles.wrapper}>
@@ -37,7 +39,16 @@ const Index = () => {
 
       <View>
         <Text>this content</Text>
+        <View>
+          <Checkbox.Item label="Item" status="checked" />
+        </View>
       </View>
+      <Checkbox
+        status={checked ? 'checked' : 'unchecked'}
+        onPress={() => {
+          setChecked(!checked);
+        }}
+      />
     </View>
   );
 };
