@@ -1,10 +1,18 @@
 import {configureStore} from '@reduxjs/toolkit';
-import reducer from './reducers';
 import thunk from 'redux-thunk';
-import logger from 'redux-logger';
+import reducer from './reducers';
+import {persistStore} from 'redux-persist';
 
-const store = configureStore({
+const middleware = [thunk];
+
+if (__DEV__) {
+  const createDebugger = require('redux-flipper').default;
+  middleware.push(createDebugger());
+}
+
+export const store = configureStore({
   reducer,
-  middleware: [logger, thunk],
+  middleware,
 });
-export default store;
+
+export const persistor = persistStore(store);
