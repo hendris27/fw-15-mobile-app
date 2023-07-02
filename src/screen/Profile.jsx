@@ -1,11 +1,95 @@
-import {View, Text} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import React from 'react';
+import {useNavigation} from '@react-navigation/native';
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import globalStyles from '../assets/css/globalStyles';
+import Headers from '../components/Headers';
 
 const Profile = () => {
+  const navigation = useNavigation();
   return (
-    <View>
-      <Text>Profile</Text>
-    </View>
+    <ScrollView style={globalStyles.containerTitleNav}>
+      <Headers>Profil</Headers>
+      <View style={globalStyles.wrapperContent}>
+        <View style={globalStyles.wrapperProfileName}>
+          <View style={globalStyles.foto}>
+            <View style={globalStyles.fotoProfil}>
+              <Image
+                source={require('../assets/img/default-profile.jpg')}
+                style={globalStyles.img}
+              />
+            </View>
+          </View>
+          <View style={globalStyles.wrapperProfileName}>
+            <Text style={globalStyles.name}>Hendri</Text>
+            <Text style={globalStyles.Profession}>Developers</Text>
+          </View>
+        </View>
+        <View style={globalStyles.cardContent}>
+          <View style={globalStyles.cardNav}>
+            <Text style={globalStyles.cardText}>Card</Text>
+            <View>
+              <TouchableOpacity style={globalStyles.buttonAddCard}>
+                <Text style={globalStyles.textColor}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <ScrollView horizontal={true}>
+            <View style={globalStyles.cardMember}>
+              <View style={globalStyles.cardMemberDetail}>
+                <Image
+                  source={require('../assets/img/card.png')}
+                  style={globalStyles.img}
+                />
+              </View>
+              <View style={globalStyles.cardMemberDetail}>
+                <Image
+                  source={require('../assets/img/card.png')}
+                  style={globalStyles.img}
+                />
+              </View>
+            </View>
+          </ScrollView>
+          <View style={globalStyles.containerProfile}>
+            <View style={globalStyles.navEditProfile}>
+              <View style={globalStyles.wrapperTextTitleNav}>
+                <View>
+                  <FeatherIcon name="edit-3" size={25} color="black" />
+                </View>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('EditProfile')}>
+                  <Text style={globalStyles.textTitleNav}>Edit Profile</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity>
+                <FeatherIcon name="arrow-right" size={25} color="black" />
+              </TouchableOpacity>
+            </View>
+            <View style={globalStyles.changePassword}>
+              <View style={globalStyles.wrapperTextTitleNav}>
+                <View>
+                  <FeatherIcon name="unlock" size={25} color="black" />
+                </View>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('ChangePassword')}>
+                  <Text style={globalStyles.textTitleNav}>Change Password</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity>
+                <FeatherIcon name="arrow-right" size={25} color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 

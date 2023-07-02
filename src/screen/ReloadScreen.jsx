@@ -1,14 +1,24 @@
-import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image} from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
-const Home = () => {
-  const navigation = useNavigation();
+const ReloadScreen = ({navigation}) => {
+  const token = useSelector(state => state.auth.token);
+
+  React.useEffect(() => {
+    if (token) {
+      setTimeout(() => {
+        navigation.navigate('Dashboard');
+      }, 1500);
+    } else {
+      setTimeout(() => {
+        navigation.replace('Register');
+      }, 1500);
+    }
+  }, [navigation, token]);
   return (
     <View style={styles.wrapper}>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Register')}
-        style={styles.content}>
+      <View style={styles.content}>
         <Text style={styles.textColor}>Find Events You Love</Text>
         <View style={{alignItems: 'center'}}>
           <Image
@@ -16,7 +26,7 @@ const Home = () => {
             style={styles.img}
           />
         </View>
-      </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -50,4 +60,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+export default ReloadScreen;

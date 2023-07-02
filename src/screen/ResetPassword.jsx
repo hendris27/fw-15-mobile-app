@@ -1,6 +1,5 @@
-import {View, Text, TouchableOpacity} from 'react-native';
-import {Checkbox} from 'react-native-paper';
-import React, {useState} from 'react';
+import {View, Text} from 'react-native';
+import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import styles from '../assets/css/globalStyles';
 import Input from '../components/Input';
@@ -9,31 +8,32 @@ import Button from '../components/Button';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {useDispatch, useSelector} from 'react-redux';
-import {asyncRegister} from '../redux/actions/auth';
+import {asyncResetPassword} from '../redux/actions/auth';
 import {clearMessage} from '../redux/reducers/auth';
 
 const validationSchema = Yup.object({
-  fullName: Yup.string()
-    .required('Full name is invalid!')
-    .min(3, 'Your Name Minimun 3 Character'),
+  code: Yup.string()
+    .required('Your Code is invalid!')
+    .min(6, 'Your Code is invalid ')
+    .max(6, 'Your Code max 6 digit'),
   email: Yup.string()
     .email('insert your the email valid')
     .required('Email is Invalid'),
-  password: Yup.string().required('Password is invalid'),
+  password: Yup.string()
+    .required('Password is invalid')
+    .min(8, 'mininum 8 character'),
   confirmPassword: Yup.string()
     .required()
     .oneOf([Yup.ref('password'), null], 'Passwords must match'),
 });
-
-const Register = () => {
+const ResetPassword = () => {
   const navigation = useNavigation();
-
   const dispatch = useDispatch();
   const successMessage = useSelector(state => state.auth.successMessage);
   const errorMessage = useSelector(state => state.auth.errorMessage);
 
-  const doRegister = values => {
-    dispatch(asyncRegister(values));
+  const doReset = values => {
+    dispatch(asyncResetPassword(values));
   };
   try {
     if (successMessage) {
@@ -47,17 +47,20 @@ const Register = () => {
         dispatch(clearMessage());
       }, 3000);
     }
-  } catch (err) {}
+  } catch (err) {
+    if (err?.response?.data?.message === 'code for forgot password has used!') {
+      setTimeout(() => {
+        navigation.replace('ResetPassword');
+      }, 3000);
+    }
+  }
 
   return (
     <View style={styles.wrapper}>
       <View style={styles.textTitle}>
-        <Text style={styles.title}>Register</Text>
+        <Text style={styles.title}>Reset Password</Text>
         <View style={styles.textSubTitle}>
-          <Text style={styles.textColor}>Already have an account?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.textPrimary}>Log In</Text>
-          </TouchableOpacity>
+          <Text style={styles.textColor}>Reset your password in here</Text>
         </View>
         {successMessage && <Alert variant="Message">{successMessage}</Alert>}
         {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
@@ -65,13 +68,13 @@ const Register = () => {
 
       <Formik
         initialValues={{
-          fullName: '',
+          code: '',
           email: '',
           password: '',
           confirmPassword: '',
         }}
         validationSchema={validationSchema}
-        onSubmit={doRegister}>
+        onSubmit={doReset}>
         {({
           handleChange,
           handleBlur,
@@ -82,13 +85,14 @@ const Register = () => {
         }) => (
           <View style={styles.parentInput}>
             <Input
-              placeholder="Insert Your Full Name"
-              onBlur={handleBlur('fullName')}
-              onChangeText={handleChange('fullName')}
-              value={values.fullName}
+              placeholder="Input Your Code Here"
+              onBlur={handleBlur('code')}
+              onChangeText={handleChange('code')}
+              value={values.code}
+              keyboardType="numeric"
             />
-            {errors.fullName && touched.fullName && (
-              <Text style={styles.errorsText}>{errors.fullName}</Text>
+            {errors.code && touched.code && (
+              <Text style={styles.errorsText}>{errors.code}</Text>
             )}
             <Input
               label="email"
@@ -122,16 +126,11 @@ const Register = () => {
               <Text style={styles.errorsText}>{errors.confirmPassword}</Text>
             )}
 
-            <View style={styles.textSubTitle}>
-              <Checkbox />
-              <Text style={styles.textColor}>Accept terms and condition</Text>
-            </View>
-
             <Button
               disabled={!touched.email && !touched.password}
               onPress={handleSubmit}
-              btnTitle="Register">
-              Register
+              btnTitle="Confirm">
+              Confirm
             </Button>
           </View>
         )}
@@ -140,4 +139,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default ResetPassword;
