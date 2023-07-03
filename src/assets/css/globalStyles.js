@@ -114,6 +114,14 @@ const globalStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  navContainerEventDetail: {
+    paddingHorizontal: 10,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    top: 10,
+  },
   navContainerChild: {
     paddingHorizontal: 10,
     flexDirection: 'row',
@@ -245,6 +253,11 @@ const globalStyles = StyleSheet.create({
     borderTopLeftRadius: 30,
     gap: 10,
   },
+  wrapperTitleDetail: {
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center',
+  },
 
   textInput: {
     opacity: 0.8,
@@ -278,24 +291,39 @@ const globalStyles = StyleSheet.create({
     gap: 10,
     overflow: 'hidden',
   },
+  boxEventDetail: {
+    position: 'relative',
+    height: 400,
+    gap: 10,
+    overflow: 'hidden',
+  },
   img: {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
   },
-  textContaninerNew: {
+  textTitleMain: {
     color: 'white',
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
+    lineHeight: 36,
+    width: 233,
   },
-  textNew: {
+  textTitleDetail: {
     fontSize: 16,
     fontWeight: 'semibold',
     color: 'white',
+    width: 220,
   },
   wrapperTitleText: {
     position: 'absolute',
-    bottom: 25,
+    top: 120,
+    left: 25,
+    gap: 10,
+  },
+  wrapperTitleTextHome: {
+    position: 'absolute',
+    bottom: 20,
     left: 25,
     gap: 10,
   },
@@ -324,7 +352,7 @@ const globalStyles = StyleSheet.create({
     backgroundColor: '#0E8388',
     width: 45,
     height: 40,
-    borderRadius: 10,
+    borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -419,6 +447,52 @@ const globalStyles = StyleSheet.create({
     flex: 1,
     paddingTop: 40,
     alignItems: 'center',
+  },
+  // main
+  containerProfileDrawwer: {
+    paddingTop: 40,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  fotoDrawwer: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    borderWidth: 3,
+    borderColor: '#4c3f91',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 30,
+  },
+  fotoIcon: {
+    width: 55,
+    height: 55,
+    backgroundColor: 'gray',
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  IMGProfiles: {
+    objectFit: 'cover',
+    width: 60,
+    height: 60,
+  },
+  textFullname: {
+    fontSize: 16,
+    fontFamily: 'Poppins-SemiBold',
+    textTransform: 'capitalize',
+    color: 'black',
+    width: 240,
+  },
+  textProfession: {
+    fontSize: 12,
+    fontFamily: 'Poppins-SemiBold',
+    textTransform: 'capitalize',
+    color: 'grey',
   },
 });
 export default globalStyles;
