@@ -13,8 +13,24 @@ import globalStyles from '../assets/css/globalStyles';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import {useNavigation} from '@react-navigation/native';
+import http from '../helpers/https';
+import moment from 'moment';
 
 const Index = () => {
+  const [events, setEvents] = React.useState([]);
+  const defaultimg = require('../assets/img/default-profile.jpg');
+  async function getDataEvent() {
+    try {
+      const {data} = await http().get('/event?limit=10');
+      setEvents(data.results);
+    } catch (error) {
+      const message = error?.response?.data?.message;
+      if (message) {
+        console.log(message);
+      }
+    }
+  }
+  getDataEvent();
   const navigation = useNavigation();
   return (
     <View style={globalStyles.wrapperDasboard}>
@@ -45,17 +61,64 @@ const Index = () => {
           <FeatherIcon name="sliders" size={30} color="black" />
         </View>
         <ScrollView horizontal={true} style={globalStyles.wrapperBox}>
+          {events.map(event => {
+            return (
+              <TouchableOpacity
+                key={`events-detail${event.id}`}
+                onPress={() => navigation.navigate('DetailEvent')}
+                style={globalStyles.boxEvent}>
+                {!event.picture && (
+                  <Image
+                    style={globalStyles.img}
+                    source={
+                      event.picture(defaultimg)
+                        ? event.picture
+                        : `${import.meta.env.BACKEND_URL}/uploads/${
+                            event.picture
+                          }`
+                    }
+                  />
+                )}
+                {event.picture && (
+                  <Image
+                    style={globalStyles.img}
+                    source={{
+                      uri: event.picture,
+                    }}
+                  />
+                )}
+
+                <View style={globalStyles.wrapperTitleTextHome}>
+                  <Text style={globalStyles.textTitleDetail}>
+                    {moment(event.date).format('LLLL')}
+                  </Text>
+                  <Text style={globalStyles.textTitleMain}>
+                    {event?.tittle}
+                  </Text>
+                  <TouchableOpacity
+                    style={globalStyles.btnArrowRight}
+                    onPress={() => navigation.navigate('Events')}>
+                    <View>
+                      <FeatherIcon name="arrow-right" size={30} color="white" />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
           <TouchableOpacity
             onPress={() => navigation.navigate('DetailEvent')}
             style={globalStyles.boxEvent}>
             <Image
-              source={require('../assets/img/event.png')}
+              source={require('../assets/img/event2.jpg')}
               style={globalStyles.img}
             />
 
-            <View style={globalStyles.wrapperTitleText}>
-              <Text style={globalStyles.textNew}>Wed, 15 Nov, 4:00 PM</Text>
-              <Text style={globalStyles.textContaninerNew}>
+            <View style={globalStyles.wrapperTitleTextHome}>
+              <Text style={globalStyles.textTitleDetail}>
+                Wed, 10 Nov, 4:00 PM
+              </Text>
+              <Text style={globalStyles.textTitleMain}>
                 Sights & Sounds Exhibition
               </Text>
               <TouchableOpacity
@@ -67,15 +130,19 @@ const Index = () => {
               </TouchableOpacity>
             </View>
           </TouchableOpacity>
-          <View style={globalStyles.boxEvent}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('DetailEvent')}
+            style={globalStyles.boxEvent}>
             <Image
-              source={require('../assets/img/event.png')}
+              source={require('../assets/img/event3.jpg')}
               style={globalStyles.img}
             />
 
-            <View style={globalStyles.wrapperTitleText}>
-              <Text style={globalStyles.textNew}>Wed, 15 Nov, 4:00 PM</Text>
-              <Text style={globalStyles.textContaninerNew}>
+            <View style={globalStyles.wrapperTitleTextHome}>
+              <Text style={globalStyles.textTitleDetail}>
+                Wed, 10 Nov, 4:00 PM
+              </Text>
+              <Text style={globalStyles.textTitleMain}>
                 Sights & Sounds Exhibition
               </Text>
               <TouchableOpacity
@@ -86,7 +153,31 @@ const Index = () => {
                 </View>
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('DetailEvent')}
+            style={globalStyles.boxEvent}>
+            <Image
+              source={require('../assets/img/event2.jpg')}
+              style={globalStyles.img}
+            />
+
+            <View style={globalStyles.wrapperTitleTextHome}>
+              <Text style={globalStyles.textTitleDetail}>
+                Wed, 10 Nov, 4:00 PM
+              </Text>
+              <Text style={globalStyles.textTitleMain}>
+                Sights & Sounds Exhibition
+              </Text>
+              <TouchableOpacity
+                style={globalStyles.btnArrowRight}
+                onPress={() => navigation.navigate('Events')}>
+                <View>
+                  <FeatherIcon name="arrow-right" size={30} color="white" />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
         </ScrollView>
         <View>
           <Text style={globalStyles.textTitleDiscover}>Discover</Text>
@@ -99,7 +190,7 @@ const Index = () => {
               <View style={globalStyles.iconDiscover}>
                 <EntypoIcon name="location-pin" size={30} color="black" />
               </View>
-              <Text style={globalStyles.textDiscover}>YOUR AREA</Text>
+              <Text style={globalStyles.textDiscover}>Location</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -119,7 +210,7 @@ const Index = () => {
               <View style={globalStyles.iconDiscover}>
                 <FeatherIcon name="sliders" size={30} color="black" />
               </View>
-              <Text style={globalStyles.textDiscover}>YOUR AREA</Text>
+              <Text style={globalStyles.textDiscover}>Technologi</Text>
             </View>
           </TouchableOpacity>
         </ScrollView>
@@ -138,26 +229,104 @@ const Index = () => {
             </View>
           </View>
           <View style={globalStyles.contentUpcoming}>
-            <View style={globalStyles.boxEvent}>
-              <Image
-                source={require('../assets/img/event.png')}
-                style={globalStyles.img}
-              />
+            <ScrollView horizontal={true} style={globalStyles.wrapperBox}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('DetailEvent')}
+                style={globalStyles.boxEvent}>
+                <Image
+                  source={require('../assets/img/event.png')}
+                  style={globalStyles.img}
+                />
 
-              <View style={globalStyles.wrapperTitleText}>
-                <Text style={globalStyles.textNew}>Wed, 15 Nov, 4:00 PM</Text>
-                <Text style={globalStyles.textContaninerNew}>
-                  Sights & Sounds Exhibition
-                </Text>
-                <TouchableOpacity
-                  style={globalStyles.btnArrowRight}
-                  onPress={() => navigation.navigate('Events')}>
-                  <View>
-                    <FeatherIcon name="arrow-right" size={30} color="white" />
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
+                <View style={globalStyles.wrapperTitleTextHome}>
+                  <Text style={globalStyles.textTitleDetail}>
+                    Wed, 10 Nov, 4:00 PM
+                  </Text>
+                  <Text style={globalStyles.textTitleMain}>
+                    Sights & Sounds Exhibition
+                  </Text>
+                  <TouchableOpacity
+                    style={globalStyles.btnArrowRight}
+                    onPress={() => navigation.navigate('Events')}>
+                    <View>
+                      <FeatherIcon name="arrow-right" size={30} color="white" />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('DetailEvent')}
+                style={globalStyles.boxEvent}>
+                <Image
+                  source={require('../assets/img/event2.jpg')}
+                  style={globalStyles.img}
+                />
+
+                <View style={globalStyles.wrapperTitleTextHome}>
+                  <Text style={globalStyles.textTitleDetail}>
+                    Wed, 10 Nov, 4:00 PM
+                  </Text>
+                  <Text style={globalStyles.textTitleMain}>
+                    Sights & Sounds Exhibition
+                  </Text>
+                  <TouchableOpacity
+                    style={globalStyles.btnArrowRight}
+                    onPress={() => navigation.navigate('Events')}>
+                    <View>
+                      <FeatherIcon name="arrow-right" size={30} color="white" />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('DetailEvent')}
+                style={globalStyles.boxEvent}>
+                <Image
+                  source={require('../assets/img/event3.jpg')}
+                  style={globalStyles.img}
+                />
+
+                <View style={globalStyles.wrapperTitleTextHome}>
+                  <Text style={globalStyles.textTitleDetail}>
+                    Wed, 10 Nov, 4:00 PM
+                  </Text>
+                  <Text style={globalStyles.textTitleMain}>
+                    Sights & Sounds Exhibition
+                  </Text>
+                  <TouchableOpacity
+                    style={globalStyles.btnArrowRight}
+                    onPress={() => navigation.navigate('Events')}>
+                    <View>
+                      <FeatherIcon name="arrow-right" size={30} color="white" />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('DetailEvent')}
+                style={globalStyles.boxEvent}>
+                <Image
+                  source={require('../assets/img/event2.jpg')}
+                  style={globalStyles.img}
+                />
+
+                <View style={globalStyles.wrapperTitleTextHome}>
+                  <Text style={globalStyles.textTitleDetail}>
+                    Wed, 10 Nov, 4:00 PM
+                  </Text>
+                  <Text style={globalStyles.textTitleMain}>
+                    Sights & Sounds Exhibition
+                  </Text>
+                  <TouchableOpacity
+                    style={globalStyles.btnArrowRight}
+                    onPress={() => navigation.navigate('Events')}>
+                    <View>
+                      <FeatherIcon name="arrow-right" size={30} color="white" />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+            </ScrollView>
             <TouchableOpacity style={globalStyles.buttonUpcoming}>
               <Text style={globalStyles.textButton}>Show All 5 Events</Text>
             </TouchableOpacity>
@@ -170,16 +339,20 @@ const Index = () => {
               <Text style={globalStyles.textDay}>Thu</Text>
             </View>
           </View>
-          <View style={globalStyles.contentUpcoming}>
-            <View style={globalStyles.boxEvent}>
+          <ScrollView horizontal={true} style={globalStyles.wrapperBox}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('DetailEvent')}
+              style={globalStyles.boxEvent}>
               <Image
                 source={require('../assets/img/event.png')}
                 style={globalStyles.img}
               />
 
-              <View style={globalStyles.wrapperTitleText}>
-                <Text style={globalStyles.textNew}>Wed, 15 Nov, 4:00 PM</Text>
-                <Text style={globalStyles.textContaninerNew}>
+              <View style={globalStyles.wrapperTitleTextHome}>
+                <Text style={globalStyles.textTitleDetail}>
+                  Wed, 10 Nov, 4:00 PM
+                </Text>
+                <Text style={globalStyles.textTitleMain}>
                   Sights & Sounds Exhibition
                 </Text>
                 <TouchableOpacity
@@ -190,11 +363,80 @@ const Index = () => {
                   </View>
                 </TouchableOpacity>
               </View>
-            </View>
-            <TouchableOpacity style={globalStyles.buttonUpcoming}>
-              <Text style={globalStyles.textButton}>Show All 5 Events</Text>
             </TouchableOpacity>
-          </View>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('DetailEvent')}
+              style={globalStyles.boxEvent}>
+              <Image
+                source={require('../assets/img/event2.jpg')}
+                style={globalStyles.img}
+              />
+
+              <View style={globalStyles.wrapperTitleTextHome}>
+                <Text style={globalStyles.textTitleDetail}>
+                  Wed, 10 Nov, 4:00 PM
+                </Text>
+                <Text style={globalStyles.textTitleMain}>
+                  Sights & Sounds Exhibition
+                </Text>
+                <TouchableOpacity
+                  style={globalStyles.btnArrowRight}
+                  onPress={() => navigation.navigate('Events')}>
+                  <View>
+                    <FeatherIcon name="arrow-right" size={30} color="white" />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('DetailEvent')}
+              style={globalStyles.boxEvent}>
+              <Image
+                source={require('../assets/img/event3.jpg')}
+                style={globalStyles.img}
+              />
+
+              <View style={globalStyles.wrapperTitleTextHome}>
+                <Text style={globalStyles.textTitleDetail}>
+                  Wed, 10 Nov, 4:00 PM
+                </Text>
+                <Text style={globalStyles.textTitleMain}>
+                  Sights & Sounds Exhibition
+                </Text>
+                <TouchableOpacity
+                  style={globalStyles.btnArrowRight}
+                  onPress={() => navigation.navigate('Events')}>
+                  <View>
+                    <FeatherIcon name="arrow-right" size={30} color="white" />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('DetailEvent')}
+              style={globalStyles.boxEvent}>
+              <Image
+                source={require('../assets/img/event2.jpg')}
+                style={globalStyles.img}
+              />
+
+              <View style={globalStyles.wrapperTitleTextHome}>
+                <Text style={globalStyles.textTitleDetail}>
+                  Wed, 10 Nov, 4:00 PM
+                </Text>
+                <Text style={globalStyles.textTitleMain}>
+                  Sights & Sounds Exhibition
+                </Text>
+                <TouchableOpacity
+                  style={globalStyles.btnArrowRight}
+                  onPress={() => navigation.navigate('Events')}>
+                  <View>
+                    <FeatherIcon name="arrow-right" size={30} color="white" />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
       </ScrollView>
     </View>
