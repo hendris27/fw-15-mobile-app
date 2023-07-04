@@ -1,6 +1,8 @@
 import React from 'react';
+import {View, Text, Image} from 'react-native';
+
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import ReloadScreen from './ReloadScreen';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -20,18 +22,61 @@ import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
 import Profile from './Profile';
 import MyBooking from './MyBooking';
+import Booking from './Booking';
 import MyWishlist from './MyWishlist';
 import EditProfile from './EditProfile';
+import Payment from './Payment';
 import ChangePassword from './ChangePassword';
 import Settings from './Settings';
+import globalStyles from '../assets/css/globalStyles';
+import http from '../helpers/https';
 
 const AuthStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props) {
   const dispatch = useDispatch();
+  const defaultimg = require('../assets/img/default-profile.jpg');
+  const token = useSelector(state => state.auth.token);
+  const [profile, setProfile] = React.useState({});
+
+  React.useEffect(() => {
+    const getProfile = async () => {
+      const {data} = await http(token).get('/profile');
+      console.log(data);
+      setProfile(data.results);
+    };
+    getProfile();
+  }, [token]);
   return (
     <DrawerContentScrollView {...props}>
+      <View style={globalStyles.containerProfileDrawwer}>
+        <View style={globalStyles.fotoDrawwer}>
+          <View style={globalStyles.fotoIcon}>
+            {!profile.picture && (
+              <Image style={globalStyles.img} source={defaultimg} />
+            )}
+            {profile.picture && (
+              <Image
+                style={globalStyles.img}
+                source={{
+                  uri: profile.picture,
+                }}
+              />
+            )}
+          </View>
+        </View>
+        <View>
+          <Text style={globalStyles.textFullname}>
+            {profile?.fullName?.length < 12 && profile?.fullName}
+            {profile?.fullName?.length >= 12 &&
+              profile?.fullName?.slice(0, 12) + ' ...'}
+          </Text>
+          <Text style={globalStyles.textProfession}>
+            {profile.profession ? profile.profession : 'profession: -'}
+          </Text>
+        </View>
+      </View>
       <DrawerItemList {...props} />
       <DrawerItem
         label="Logout"
@@ -109,13 +154,42 @@ function DrawerComponent() {
         }}
       />
       <Drawer.Screen
+        name="Payment"
+        component={Payment}
+        options={{
+          drawerIcon: ({color, size}) => (
+            <FeatherIcon name="user" color={color} size={size} />
+          ),
+          drawerItemStyle: {
+            display: 'none',
+          },
+          drawerLabel: 'payment',
+        }}
+      />
+      <Drawer.Screen
         name="DetailEvent"
         component={DetailEvent}
         options={{
           drawerIcon: ({color, size}) => (
             <FeatherIcon name="list" color={color} size={size} />
           ),
+          drawerItemStyle: {
+            display: 'none',
+          },
           drawerLabel: 'Detail Event',
+        }}
+      />
+      <Drawer.Screen
+        name="Booking"
+        component={Booking}
+        options={{
+          drawerIcon: ({color, size}) => (
+            <FeatherIcon name="list" color={color} size={size} />
+          ),
+          drawerItemStyle: {
+            display: 'none',
+          },
+          drawerLabel: 'Booking',
         }}
       />
       <Drawer.Screen
