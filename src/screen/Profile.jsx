@@ -1,19 +1,26 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import globalStyles from '../assets/css/globalStyles';
 import Headers from '../components/Headers';
+import {useSelector} from 'react-redux';
+import http from '../helpers/https';
 
 const Profile = () => {
+  const defaultimg = require('../assets/img/default-profile.jpg');
   const navigation = useNavigation();
+  const token = useSelector(state => state.auth.token);
+  const [profile, setProfile] = React.useState({});
+
+  React.useEffect(() => {
+    const getProfile = async () => {
+      const {data} = await http(token).get('/profile');
+      console.log(data);
+      setProfile(data.results);
+    };
+    getProfile();
+  }, [token]);
   return (
     <ScrollView style={globalStyles.containerTitleNav}>
       <Headers>Profil</Headers>
@@ -21,15 +28,22 @@ const Profile = () => {
         <View style={globalStyles.wrapperProfileName}>
           <View style={globalStyles.foto}>
             <View style={globalStyles.fotoProfil}>
-              <Image
-                source={require('../assets/img/default-profile.jpg')}
-                style={globalStyles.img}
-              />
+              {!profile.picture && (
+                <Image style={globalStyles.img} source={defaultimg} />
+              )}
+              {profile.picture && (
+                <Image
+                  style={globalStyles.img}
+                  source={{
+                    uri: profile.picture,
+                  }}
+                />
+              )}
             </View>
           </View>
           <View style={globalStyles.wrapperProfileName}>
-            <Text style={globalStyles.name}>Hendri</Text>
-            <Text style={globalStyles.Profession}>Developers</Text>
+            <Text style={globalStyles.name}>{profile?.fullName}</Text>
+            <Text style={globalStyles.Profession}>{profile?.profession} </Text>
           </View>
         </View>
         <View style={globalStyles.cardContent}>
