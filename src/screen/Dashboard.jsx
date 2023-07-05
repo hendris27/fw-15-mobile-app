@@ -4,7 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native-gesture-handler';
-import * as React from 'react';
+import React, {useCallback} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
 import globalStyles from '../assets/css/globalStyles';
@@ -13,15 +13,25 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 import {useFocusEffect} from '@react-navigation/native';
 import http from '../helpers/https';
 import moment from 'moment';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 const Home = ({navigation}) => {
   const defaultimg = require('../assets/img/default-profile.jpg');
-  const token = useSelector(state => state.auth.token);
   const [events, setEvents] = React.useState([]);
   const [eventCategories, setEventCategories] = React.useState([]);
   const [eventCategoriesData, setEventCategoriesData] = React.useState([]);
   const [search, setSearch] = React.useState('');
+  const dispatch = useDispatch();
+  const deviceToken = useSelector(state => state.deviceToken.data);
+  const token = useSelector(state => state.auth.token);
+  const saveToken = useCallback(async () => {
+    const form = new URLSearchParams({token: deviceToken.token});
+    await http(token).post('/device-token', form.toString());
+  }, [deviceToken, token]);
+
+  React.useEffect(() => {
+    saveToken();
+  }, [saveToken]);
 
   useFocusEffect(
     React.useCallback(() => {
