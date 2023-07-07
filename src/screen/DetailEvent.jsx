@@ -5,7 +5,7 @@ import globalStyles from '../assets/css/globalStyles';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 
-const Events = () => {
+const DetailsEvents = () => {
   const navigation = useNavigation();
   return (
     <View style={style.container}>
@@ -57,7 +57,7 @@ const Events = () => {
       </View>
       <View style={style.contDetail}>
         <View style={style.contTextDetail}>
-          <Text style={style.textEvents}>Event Detail</Text>
+          <Text style={style.textDetails}>Event Detail</Text>
           <Text style={style.textDetailEvents}>
             After his controversial art exhibition "Tear and Consume" back in
             November 2018, in which guests were invited to tear up…
@@ -203,4 +203,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default Events;
+export default DetailsEvents;

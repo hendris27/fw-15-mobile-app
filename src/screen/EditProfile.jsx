@@ -35,6 +35,12 @@ const EditProfile = () => {
               />
             </View>
           </View>
+          <View>
+            <Text style={globalStyles.textColor}>foto</Text>
+          </View>
+          <View>
+            <Text style={globalStyles.textColor}>foto</Text>
+          </View>
         </View>
         <View style={style.titleName}>
           <Text style={style.subTitleName}>Name</Text>

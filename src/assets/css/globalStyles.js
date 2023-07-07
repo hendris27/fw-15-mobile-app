@@ -60,7 +60,7 @@ const globalStyles = StyleSheet.create({
   },
   inputComponentsDashboard: {
     flex: 1,
-    color: 'green',
+    color: 'Black',
   },
   textTitle: {
     color: 'black',

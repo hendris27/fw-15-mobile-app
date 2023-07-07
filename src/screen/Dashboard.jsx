@@ -1,9 +1,14 @@
-import {View, Text, Image, StyleSheet} from 'react-native';
 import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
   ScrollView,
   TextInput,
   TouchableOpacity,
-} from 'react-native-gesture-handler';
+} from 'react-native';
+import {Button} from 'react-native-paper';
+
 import React, {useCallback} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
@@ -50,14 +55,16 @@ const Home = ({navigation}) => {
   );
 
   async function getEventByCategory(name) {
-    const {data} = await http(token).get('/event', {params: {category: name}});
+    const {data} = await http(token).get('/event', {
+      params: {searchByCategory: name},
+    });
     setEventCategoriesData(data.results);
   }
 
   async function getEventByName(search) {
-    const eventdata = await http(token).get('/events?limit=20');
+    const eventdata = await http(token).get('/event?limit=20');
     const {data} = await http(token).get('/event', {
-      params: {search: search},
+      params: {searchByName: search},
     });
     if (search === '') {
       setEvents(eventdata.data.results);
@@ -65,15 +72,17 @@ const Home = ({navigation}) => {
       setEvents(data.results);
     }
   }
-  React.useEffect(() => {
-    async function getEventCategories() {
-      let {data} = await http(token).get('/category?limit=7');
-      setEventCategories(data.results);
-    }
+  useFocusEffect(
+    React.useCallback(() => {
+      async function getEventCategories() {
+        let {data} = await http(token).get('/category?limit=7');
+        setEventCategories(data.results);
+      }
 
-    getEventCategories();
-    getEventByCategory();
-  }, []);
+      getEventCategories();
+      getEventByCategory();
+    }, []),
+  );
 
   return (
     <View style={globalStyles.wrapperDasboard}>
@@ -95,7 +104,7 @@ const Home = ({navigation}) => {
         <TextInput
           style={globalStyles.inputComponentsDashboard}
           placeholder="Search event..."
-          onChangeText={ev => setSearch(ev)}
+          onChangeText={event => setSearch(event)}
           onSubmitEditing={() => getEventByName(search)}
           onBlur={() => getEventByName()}
         />
@@ -145,6 +154,9 @@ const Home = ({navigation}) => {
               </TouchableOpacity>
             );
           })}
+          {events.length <= 1 && (
+            <Text style={globalStyles.textColor}>Data Not found!</Text>
+          )}
         </ScrollView>
         <View>
           <Text style={globalStyles.textTitleDiscover}>Discover</Text>
@@ -179,14 +191,9 @@ const Home = ({navigation}) => {
                   </Text>
                 </View>
               </View>
-              <ScrollView horizontal={true} style={globalStyles.wrapperBox}>
-                <TouchableOpacity
+              <View horizontal={true} style={globalStyles.wrapperBox}>
+                <View
                   key={`events-detail${item.id}`}
-                  onPress={() => {
-                    navigation.navigate('DetailEvent', {
-                      id: item.id,
-                    });
-                  }}
                   style={globalStyles.boxEvent}>
                   {!item.picture && (
                     <Image style={globalStyles.img} source={defaultimg} />
@@ -207,21 +214,25 @@ const Home = ({navigation}) => {
                     <Text style={globalStyles.textTitleMain}>
                       {item?.tittle}
                     </Text>
-                    <TouchableOpacity style={globalStyles.btnArrowRight}>
-                      <View>
-                        <FeatherIcon
-                          name="arrow-right"
-                          size={30}
-                          color="white"
-                        />
-                      </View>
-                    </TouchableOpacity>
                   </View>
-                </TouchableOpacity>
-              </ScrollView>
+                </View>
+              </View>
+              <View>
+                <Button
+                  style={{
+                    backgroundColor: '#19a7ce',
+                    borderRadius: 8,
+                    marginTop: 110,
+                  }}>
+                  <Text style={globalStyles.textColor}>Show All 5 Events</Text>
+                </Button>
+              </View>
             </View>
           );
         })}
+        {eventCategoriesData.length <= 0 && (
+          <Text style={globalStyles.textColor}>Data Category Not Found</Text>
+        )}
       </ScrollView>
     </View>
   );
