@@ -74,9 +74,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.testapp"
+    namespace "com.dri.eventorganizing"
     defaultConfig {
-        applicationId "com.testapp"
+        applicationId "com.dri.eventorganizing"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
