@@ -18,6 +18,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import http from '../helpers/https';
 import moment from 'moment';
 import {useSelector} from 'react-redux';
+import SplashScreen from 'react-native-splash-screen';
 
 const Home = ({navigation}) => {
   const defaultimg = require('../assets/img/default-profile.jpg');
@@ -36,6 +37,10 @@ const Home = ({navigation}) => {
   React.useEffect(() => {
     saveToken();
   }, [saveToken]);
+
+  React.useEffect(()=>{
+SplashScreen.hide()
+  },[])
 
   useFocusEffect(
     React.useCallback(() => {
@@ -121,7 +126,7 @@ const Home = ({navigation}) => {
               <TouchableOpacity
                 key={`events-detail${event.id}`}
                 onPress={() => {
-                  navigation.navigate('Detail Event', {
+                  navigation.navigate('DetailEvent', {
                     id: event.id,
                   });
                 }}

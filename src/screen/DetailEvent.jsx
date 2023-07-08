@@ -1,32 +1,108 @@
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import globalStyles from '../assets/css/globalStyles';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import http from '../helpers/https';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
 
-const DetailsEvents = () => {
+const DetailsEvents = ({route}) => {
   const navigation = useNavigation();
+  const {id} = route.params;
+  const [events, setEvents] = React.useState([]);
+  const token = useSelector(state => state.auth.token);
+  const [wishlistButton, setWishlistButton] = React.useState(false);
+  const [wishlist, setWishlist] = React.useState([]);
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function getEventDetails() {
+        const {data} = await http().get(`/event/${id}`);
+        setEvents(data.results);
+      }
+
+      getEventDetails();
+    }),
+  );
+
+  async function addWishlists() {
+  try {
+    const eventId = {eventId: id};
+    const qString = new URLSearchParams(eventId).toString();
+    const {data} = await http(token).post('/wishlist', qString);
+    console.log(data);
+    if (wishlistButton) {
+      setWishlistButton(false);
+    } else {
+      setWishlistButton(true);
+    }
+  } catch (err) {
+    const message = err?.response?.data?.message;
+    if (message) {
+      console.log(message);
+    }
+  }
+};
+
+// const doDelete = async itemId => {
+//   try {
+//     await http (token).delete(`/wishlist/managedeleted/${itemId}`);
+//     setWishlist(wishlist.filter(items => items.id !== itemId));
+//   } catch (err) {
+//     const message = err?.response?.data?.message;
+
+//     if (message) {
+//       console.warn(message);
+//     }
+//   }
+// };
+
+  async function doPayments() {
+    const eventId = id;
+    const statusId = 1;
+    const paymentMethodId = 1;
+    const body = new URLSearchParams({
+      eventId,
+      statusId,
+      paymentMethodId,
+    }).toString();
+    const {data} = await http(token).post('/reservation', body);
+    if (data.success === true) {
+      navigation.navigate('Payment', {
+        reservationId: data.results.reservation.id,
+        eventTitle: data.results.tittle,
+      });
+    }
+  }
   return (
     <View style={style.container}>
       <View style={globalStyles.boxEventDetail}>
-        <Image
-          source={require('../assets/img/event.png')}
-          style={globalStyles.img}
-        />
+      <Image style={globalStyles.img} source={{uri: events.picture,}}
+                    />
         <View style={globalStyles.navContainerEventDetail}>
           <View>
             <FeatherIcon name="arrow-left" size={30} color="white" />
           </View>
           <View>
-            <TouchableOpacity>
-              <FeatherIcon name="heart" size={30} color="white" />
+            <TouchableOpacity  onPress={addWishlists}>
+            {wishlistButton === true ? (
+                <AntDesignIcon name="heart" size={30} color="red"  />
+              ) : (
+                <AntDesignIcon
+                //  onPress={() => doDelete(items.id)}
+                  name="hearto" 
+                  size={30} color="white" />
+              )}
             </TouchableOpacity>
           </View>
         </View>
         <View style={globalStyles.wrapperTitleText}>
           <Text style={globalStyles.textTitleMain}>
-            Sights & Sounds Exhibition
+          {events?.title}
           </Text>
           <View style={globalStyles.wrapperTitleDetail}>
             <View>
@@ -34,7 +110,7 @@ const DetailsEvents = () => {
             </View>
             <View>
               <Text style={globalStyles.textTitleDetail}>
-                Jakarta, Indonesia
+              {events?.location}
               </Text>
             </View>
           </View>
@@ -44,7 +120,7 @@ const DetailsEvents = () => {
             </View>
             <View>
               <Text style={globalStyles.textTitleDetail}>
-                Wed, 15 Nov, 4:00 PM
+              {moment(events?.date).format('LLL')}
               </Text>
             </View>
           </View>
@@ -59,8 +135,7 @@ const DetailsEvents = () => {
         <View style={style.contTextDetail}>
           <Text style={style.textDetails}>Event Detail</Text>
           <Text style={style.textDetailEvents}>
-            After his controversial art exhibition "Tear and Consume" back in
-            November 2018, in which guests were invited to tear up…
+           {events.descriptions}
           </Text>
         </View>
         <View style={style.contOut}>

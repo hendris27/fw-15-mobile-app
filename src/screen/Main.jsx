@@ -101,11 +101,7 @@ function DrawerComponent() {
         },
       }}
       drawerContent={props => <CustomDrawerContent {...props} />}>
-      <Drawer.Screen
-        name="ReloadScreen"
-        component={ReloadScreen}
-        options={{drawerLabel: () => null}}
-      />
+     
       <Drawer.Screen
         name="Dashboard"
         component={Dashboard}
@@ -232,7 +228,6 @@ const Main = () => {
     <NavigationContainer>
       {!token && (
         <AuthStack.Navigator screenOptions={{headerShown: false}}>
-          <AuthStack.Screen name="ReloadScreen" component={ReloadScreen} />
           <AuthStack.Screen name="Register" component={Register} />
           <AuthStack.Screen name="Login" component={Login} />
           <AuthStack.Screen name="ForgotPassword" component={ForgotPassword} />

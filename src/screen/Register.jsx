@@ -11,6 +11,7 @@ import * as Yup from 'yup';
 import {useDispatch, useSelector} from 'react-redux';
 import {asyncRegister} from '../redux/actions/auth';
 import {clearMessage} from '../redux/reducers/auth';
+import SplashScreen from 'react-native-splash-screen';
 
 const validationSchema = Yup.object({
   fullName: Yup.string()
@@ -25,7 +26,11 @@ const validationSchema = Yup.object({
     .oneOf([Yup.ref('password'), null], 'Passwords must match'),
 });
 
+
 const Register = () => {
+  React.useEffect(()=>{
+    SplashScreen.hide()
+      },[])
   const navigation = useNavigation();
 
   const dispatch = useDispatch();
@@ -49,6 +54,7 @@ const Register = () => {
     }
   } catch (err) {}
 
+ 
   return (
     <View style={styles.wrapper}>
       <View style={styles.textTitle}>
