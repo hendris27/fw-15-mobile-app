@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import React from 'react';
 import { Formik } from 'formik';
 import { TextInput } from 'react-native-gesture-handler';
@@ -23,8 +23,10 @@ const CreateEvent = ({ navigation }) => {
   const [selectedLocation, setSelectedLocation] = React.useState('');
   const [date, setDate] = React.useState(new Date());
   const [open, setOpen] = React.useState(false);
-  const [setPicture, setFileResponse] = React.useState([]);
+  const [setPicture, setSetPicture] = React.useState([]);
   const token = useSelector(state => state.auth.token);
+  const [selectedPicture, setSelectedPicture] = React.useState();
+  const defaultimgEvent = require('../assets/img/defaultIMGEvent.png');
 
   React.useEffect(() => {
     async function getCategory() {
@@ -65,7 +67,26 @@ const CreateEvent = ({ navigation }) => {
         uri: Platform.OS === 'android' ? data.uri : data.uri.replace('file://', ''),
       });
     }
+    setSetPicture(data.uri);
   };
+  // const uploadFile = React.useCallback(
+  //   async file => {
+  //     const form = new FormData();
+  //     form.append('picture', file);
+  //     const { data } = await http(token).post('event/managecreate', form, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //       },
+  //     });
+  //   },
+  //   [token],
+  // );
+
+  // React.useEffect(() => {
+  //   if (selectedPicture) {
+  //     uploadFile(selectedPicture);
+  //   }
+  // }, [selectedPicture, uploadFile]);
 
   category.map(dataCategory => {
     nameCategory.push(dataCategory.name);
@@ -97,17 +118,23 @@ const CreateEvent = ({ navigation }) => {
     if (date) {
       form.append('date', moment(date).format('DD-MM-YYYY'));
     }
+    const fileImage = {
+      uri: setPicture,
+      type: 'image/jpeg',
+      name: 'image' + '-' + Date.now() + '.jpg',
+    };
     if (setPicture) {
-      form.append('picture', setPicture);
+      form.append('picture', fileImage);
     }
     try {
-      const { data } = await http(token).post('/events/manage', form, {
+      const { data } = await http(token).post('/event/managecreate', form, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
       if (data.success === true) {
       }
+      console.log(data);
     } catch (err) {
       console.warn(err);
     }
@@ -116,7 +143,7 @@ const CreateEvent = ({ navigation }) => {
   return (
     <ScrollView style={globalStyles.containerTitleNav}>
       <View style={globalStyles.navContainerChild}>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
           <FeatherIcon name="arrow-left" size={25} color="#FFF" />
         </TouchableOpacity>
         <View>
@@ -127,10 +154,30 @@ const CreateEvent = ({ navigation }) => {
         </View>
       </View>
       <View style={{ backgroundColor: 'white' }}>
-        <Formik initialValues={{ title: '', description: '' }} onSubmit={actionCreate}>
+        <Formik initialValues={{ tittle: '', description: '' }} onSubmit={actionCreate}>
           {({ values, handleBlur, handleChange, handleSubmit }) => {
             return (
               <View style={{ margin: 30 }}>
+                <View
+                  style={{
+                    width: '100%',
+                    height: 300,
+                    backgroundColor: 'gray',
+                    borderRadius: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    overflow: 'hidden',
+                    borderBlockColor: 'red',
+                    borderWidth: 5,
+                    borderColor: '#0E8388',
+                  }}>
+                  {selectedPicture ? (
+                    <Image style={globalStyles.img} src={selectedPicture.uri} />
+                  ) : (
+                    <Image style={globalStyles.img} source={defaultimgEvent} />
+                  )}
+                </View>
+
                 <View>
                   <Text style={{ color: 'black', marginBottom: 5 }}>Name Event</Text>
                   <TextInput
@@ -139,7 +186,7 @@ const CreateEvent = ({ navigation }) => {
                     placeholderTextColor="gray"
                     onChangeText={handleChange('tittle')}
                     onBlur={handleBlur('tittle')}
-                    value={values.title}></TextInput>
+                    value={values.tittle}></TextInput>
                 </View>
                 <View>
                   <Text style={{ margin: 5, color: 'black' }}>Category</Text>
@@ -261,6 +308,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     width: '100%',
     fontFamily: 'Poppins-Medium',
+    color: 'black',
   },
   DropdownSelected: {
     width: '100%',
