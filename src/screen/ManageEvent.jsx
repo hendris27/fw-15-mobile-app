@@ -15,7 +15,7 @@ const ManageEvent = ({ navigation }) => {
   useFocusEffect(
     React.useCallback(() => {
       async function getEvents() {
-        const { data } = await http(token).get('/events?limit=10');
+        const { data } = await http(token).get('/event/manage?limit=10');
         setEvents(data.results);
       }
       getEvents();
@@ -23,7 +23,7 @@ const ManageEvent = ({ navigation }) => {
   );
   const deleteAction = async eventsItem => {
     try {
-      await http(token).delete(`/events/manage/${eventsItem}`);
+      await http(token).delete(`/event/manage/${eventsItem}`);
       setEvents(events.filter(eventitems => eventitems.id !== eventsItem));
     } catch (err) {
       const message = err?.response?.data?.message;
@@ -70,7 +70,7 @@ const ManageEvent = ({ navigation }) => {
                 </View>
                 <View style={styles.boxContentEvent}>
                   <View>
-                    <Text style={styles.titleTextEvent}>{items.title}</Text>
+                    <Text style={styles.titleTextEvent}>{items.tittle}</Text>
                   </View>
                   <View>
                     <View>
