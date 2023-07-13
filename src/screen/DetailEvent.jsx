@@ -26,7 +26,7 @@ const DetailsEvents = ({ route, ...rest }) => {
       }
 
       getEventDetails();
-    }),
+    }, []),
   );
   useFocusEffect(
     React.useCallback(() => {
@@ -63,36 +63,9 @@ const DetailsEvents = ({ route, ...rest }) => {
     }
   }
 
-  // const doDelete = async itemId => {
-  //   try {
-  //     await http (token).delete(`/wishlist/managedeleted/${itemId}`);
-  //     setWishlist(wishlist.filter(items => items.id !== itemId));
-  //   } catch (err) {
-  //     const message = err?.response?.data?.message;
-
-  //     if (message) {
-  //       console.warn(message);
-  //     }
-  //   }
-  // };
-
-  async function actionBooking() {
-    const eventId = id;
-    const statusId = 1;
-    const paymentMethodId = 1;
-    const body = new URLSearchParams({
-      eventId,
-      statusId,
-      paymentMethodId,
-    }).toString();
-    const { data } = await http(token).post('/reservation', body);
-    if (data.success === true) {
-      navigation.navigate('Booking', {
-        reservationId: data.results.reservation.id,
-        eventTitle: data.results.tittle,
-      });
-    }
-  }
+  const buyTickets = id => {
+    navigation.navigate('Booking', { id });
+  };
   return (
     <View style={style.container}>
       <View style={globalStyles.boxEventDetail}>
@@ -158,7 +131,8 @@ const DetailsEvents = ({ route, ...rest }) => {
               </View>
             </View>
             <View style={style.touchButton}>
-              <TouchableOpacity onPress={actionBooking}>
+              {/* <TouchableOpacity onPress={actionBooking}> */}
+              <TouchableOpacity onPress={() => buyTickets(events.id)}>
                 <Text style={style.textTouch}>Buy Tickets</Text>
               </TouchableOpacity>
             </View>
