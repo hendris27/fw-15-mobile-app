@@ -23,7 +23,7 @@ const CreateEvent = ({ navigation }) => {
   const [selectedLocation, setSelectedLocation] = React.useState('');
   const [date, setDate] = React.useState(new Date());
   const [open, setOpen] = React.useState(false);
-  const [setPicture, setSetPicture] = React.useState([]);
+  const [filePicture, setFilePicture] = React.useState([]);
   const token = useSelector(state => state.auth.token);
   const [selectedPicture, setSelectedPicture] = React.useState();
   const defaultimgEvent = require('../assets/img/defaultIMGEvent.png');
@@ -67,26 +67,8 @@ const CreateEvent = ({ navigation }) => {
         uri: Platform.OS === 'android' ? data.uri : data.uri.replace('file://', ''),
       });
     }
-    setSetPicture(data.uri);
+    setFilePicture(data.uri);
   };
-  // const uploadFile = React.useCallback(
-  //   async file => {
-  //     const form = new FormData();
-  //     form.append('picture', file);
-  //     const { data } = await http(token).post('event/managecreate', form, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data',
-  //       },
-  //     });
-  //   },
-  //   [token],
-  // );
-
-  // React.useEffect(() => {
-  //   if (selectedPicture) {
-  //     uploadFile(selectedPicture);
-  //   }
-  // }, [selectedPicture, uploadFile]);
 
   category.map(dataCategory => {
     nameCategory.push(dataCategory.name);
@@ -119,11 +101,11 @@ const CreateEvent = ({ navigation }) => {
       form.append('date', moment(date).format('DD-MM-YYYY'));
     }
     const fileImage = {
-      uri: setPicture,
+      uri: filePicture,
       type: 'image/jpeg',
       name: 'image' + '-' + Date.now() + '.jpg',
     };
-    if (setPicture) {
+    if (filePicture) {
       form.append('picture', fileImage);
     }
     try {
@@ -154,7 +136,7 @@ const CreateEvent = ({ navigation }) => {
         </View>
       </View>
       <View style={{ backgroundColor: 'white' }}>
-        <Formik initialValues={{ tittle: '', description: '' }} onSubmit={actionCreate}>
+        <Formik initialValues={{ tittle: '', descriptions: '' }} onSubmit={actionCreate}>
           {({ values, handleBlur, handleChange, handleSubmit }) => {
             return (
               <View style={{ margin: 30 }}>
@@ -177,6 +159,12 @@ const CreateEvent = ({ navigation }) => {
                     <Image style={globalStyles.img} source={defaultimgEvent} />
                   )}
                 </View>
+                <TouchableOpacity onPress={getImageLibrary}>
+                  <View style={styles.selectPicture}>
+                    <Text style={globalStyles.textColor}>Select Picture Event</Text>
+                    <FeatherIcon name="upload" size={25} color="#0E8388" />
+                  </View>
+                </TouchableOpacity>
 
                 <View>
                   <Text style={{ color: 'black', marginBottom: 5 }}>Name Event</Text>
@@ -263,13 +251,7 @@ const CreateEvent = ({ navigation }) => {
                     />
                   </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={getImageLibrary}>
-                  <Text style={globalStyles.textColor}>Select Picture</Text>
-                  <View style={styles.selectPicture}>
-                    <Text style={globalStyles.textColor}>Select Picture</Text>
-                    <FeatherIcon name="upload" size={25} color="#0E8388" />
-                  </View>
-                </TouchableOpacity>
+
                 <View>
                   <Text style={{ fontFamily: 'Poppins-Medium', marginTop: 5 }}>Description</Text>
                   <View
@@ -283,9 +265,9 @@ const CreateEvent = ({ navigation }) => {
                     <TextInput
                       placeholder="Description"
                       placeholderTextColor="gray"
-                      onChangeText={handleChange('description')}
-                      onBlur={handleBlur('description')}
-                      value={values.description}></TextInput>
+                      onChangeText={handleChange('descriptions')}
+                      onBlur={handleBlur('descriptions')}
+                      value={values.descriptions}></TextInput>
                   </View>
                 </View>
                 <View style={{ marginTop: 10 }}>

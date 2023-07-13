@@ -1,17 +1,12 @@
 import React from 'react';
-import {View, Text, Image} from 'react-native';
+import { View, Text, Image } from 'react-native';
 
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer, useFocusEffect, useNavigation } from '@react-navigation/native';
 import ReloadScreen from './ReloadScreen';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  createDrawerNavigator,
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerItem,
-} from '@react-navigation/drawer';
-import {logout} from '../redux/reducers/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
+import { logout } from '../redux/reducers/auth';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Login from './Login';
@@ -22,6 +17,8 @@ import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
 import Profile from './Profile';
 import MyBooking from './MyBooking';
+import ManageEvent from './ManageEvent';
+import CreateEvent from './CreateEvent';
 import Booking from './Booking';
 import MyWishlist from './MyWishlist';
 import EditProfile from './EditProfile';
@@ -30,6 +27,7 @@ import ChangePassword from './ChangePassword';
 import Settings from './Settings';
 import globalStyles from '../assets/css/globalStyles';
 import http from '../helpers/https';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const AuthStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -40,9 +38,27 @@ function CustomDrawerContent(props) {
   const token = useSelector(state => state.auth.token);
   const [profile, setProfile] = React.useState({});
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchDataProfile = async () => {
+        try {
+          const { data } = await http(token).get('/profile');
+          console.log(data.results);
+          setProfile(data.results);
+        } catch (error) {
+          const message = error?.response?.data?.message;
+          if (message) {
+            console.log(message);
+          }
+        }
+      };
+      fetchDataProfile();
+    }, [token]),
+  );
+
   React.useEffect(() => {
     const getProfile = async () => {
-      const {data} = await http(token).get('/profile');
+      const { data } = await http(token).get('/profile');
       console.log(data);
       setProfile(data.results);
     };
@@ -53,10 +69,8 @@ function CustomDrawerContent(props) {
       <View style={globalStyles.containerProfileDrawwer}>
         <View style={globalStyles.fotoDrawwer}>
           <View style={globalStyles.fotoIcon}>
-            {!profile.picture && (
-              <Image style={globalStyles.img} source={defaultimg} />
-            )}
-            {profile.picture && (
+            {profile?.picture === null && <Image style={globalStyles.img} source={defaultimg} />}
+            {profile?.picture !== null && (
               <Image
                 style={globalStyles.img}
                 source={{
@@ -69,12 +83,9 @@ function CustomDrawerContent(props) {
         <View>
           <Text style={globalStyles.textFullname}>
             {profile?.fullName?.length < 12 && profile?.fullName}
-            {profile?.fullName?.length >= 12 &&
-              profile?.fullName?.slice(0, 12) + ' ...'}
+            {profile?.fullName?.length >= 12 && profile?.fullName?.slice(0, 12) + ' ...'}
           </Text>
-          <Text style={globalStyles.textProfession}>
-            {profile.profession ? profile.profession : 'profession: -'}
-          </Text>
+          <Text style={globalStyles.textProfession}>{profile.profession ? profile.profession : 'profession: -'}</Text>
         </View>
       </View>
       <DrawerItemList {...props} />
@@ -82,9 +93,7 @@ function CustomDrawerContent(props) {
         label="Logout"
         labelColor="red"
         onPress={() => dispatch(logout())}
-        icon={({focused, color, size}) => (
-          <FeatherIcon name="log-out" color="red" size={size} />
-        )}
+        icon={({ focused, color, size }) => <FeatherIcon name="log-out" color="red" size={size} />}
       />
     </DrawerContentScrollView>
   );
@@ -101,14 +110,11 @@ function DrawerComponent() {
         },
       }}
       drawerContent={props => <CustomDrawerContent {...props} />}>
-     
       <Drawer.Screen
         name="Dashboard"
         component={Dashboard}
         options={{
-          drawerIcon: ({color, size}) => (
-            <FontAwesome5Icon name="home" color={color} size={size} />
-          ),
+          drawerIcon: ({ color, size }) => <FontAwesome5Icon name="home" color={color} size={size} />,
           drawerLabel: 'Dashboard',
         }}
       />
@@ -116,20 +122,25 @@ function DrawerComponent() {
         name="Profile"
         component={Profile}
         options={{
-          drawerIcon: ({color, size}) => (
-            <FeatherIcon name="user" color={color} size={size} />
-          ),
+          drawerIcon: ({ color, size }) => <FeatherIcon name="user" color={color} size={size} />,
 
           drawerLabel: 'Profile',
+        }}
+      />
+      <Drawer.Screen
+        name="ManageEvent"
+        component={ManageEvent}
+        options={{
+          drawerIcon: ({ color, size }) => <MaterialIcons name="event-available" color={color} size={size} />,
+
+          drawerLabel: 'Manage Event',
         }}
       />
       <Drawer.Screen
         name="EditProfile"
         component={EditProfile}
         options={{
-          drawerIcon: ({color, size}) => (
-            <FeatherIcon name="user" color={color} size={size} />
-          ),
+          drawerIcon: ({ color, size }) => <FeatherIcon name="user" color={color} size={size} />,
           drawerItemStyle: {
             display: 'none',
           },
@@ -137,12 +148,21 @@ function DrawerComponent() {
         }}
       />
       <Drawer.Screen
+        name="CreateEvent"
+        component={CreateEvent}
+        options={{
+          drawerIcon: ({ color, size }) => <FeatherIcon name="user" color={color} size={size} />,
+          drawerItemStyle: {
+            display: 'none',
+          },
+          drawerLabel: 'Create Event',
+        }}
+      />
+      <Drawer.Screen
         name="ChangePassword"
         component={ChangePassword}
         options={{
-          drawerIcon: ({color, size}) => (
-            <FeatherIcon name="user" color={color} size={size} />
-          ),
+          drawerIcon: ({ color, size }) => <FeatherIcon name="user" color={color} size={size} />,
           drawerItemStyle: {
             display: 'none',
           },
@@ -153,9 +173,7 @@ function DrawerComponent() {
         name="Payment"
         component={Payment}
         options={{
-          drawerIcon: ({color, size}) => (
-            <FeatherIcon name="user" color={color} size={size} />
-          ),
+          drawerIcon: ({ color, size }) => <FeatherIcon name="user" color={color} size={size} />,
           drawerItemStyle: {
             display: 'none',
           },
@@ -166,9 +184,7 @@ function DrawerComponent() {
         name="DetailEvent"
         component={DetailEvent}
         options={{
-          drawerIcon: ({color, size}) => (
-            <FeatherIcon name="list" color={color} size={size} />
-          ),
+          drawerIcon: ({ color, size }) => <FeatherIcon name="list" color={color} size={size} />,
           drawerItemStyle: {
             display: 'none',
           },
@@ -179,9 +195,7 @@ function DrawerComponent() {
         name="Booking"
         component={Booking}
         options={{
-          drawerIcon: ({color, size}) => (
-            <FeatherIcon name="list" color={color} size={size} />
-          ),
+          drawerIcon: ({ color, size }) => <FeatherIcon name="list" color={color} size={size} />,
           drawerItemStyle: {
             display: 'none',
           },
@@ -192,9 +206,7 @@ function DrawerComponent() {
         name="MyBooking"
         component={MyBooking}
         options={{
-          drawerIcon: ({color, size}) => (
-            <FeatherIcon name="list" color={color} size={size} />
-          ),
+          drawerIcon: ({ color, size }) => <FeatherIcon name="list" color={color} size={size} />,
           drawerLabel: 'My Booking',
         }}
       />
@@ -202,9 +214,7 @@ function DrawerComponent() {
         name="MyWishlist"
         component={MyWishlist}
         options={{
-          drawerIcon: ({color, size}) => (
-            <FeatherIcon name="heart" color={color} size={size} />
-          ),
+          drawerIcon: ({ color, size }) => <FeatherIcon name="heart" color={color} size={size} />,
           drawerLabel: 'My Wishlist',
         }}
       />
@@ -212,9 +222,7 @@ function DrawerComponent() {
         name="Setting"
         component={Settings}
         options={{
-          drawerIcon: ({color, size}) => (
-            <FeatherIcon name="settings" color={color} size={size} />
-          ),
+          drawerIcon: ({ color, size }) => <FeatherIcon name="settings" color={color} size={size} />,
           drawerLabel: 'Settings',
         }}
       />
@@ -227,7 +235,7 @@ const Main = () => {
   return (
     <NavigationContainer>
       {!token && (
-        <AuthStack.Navigator screenOptions={{headerShown: false}}>
+        <AuthStack.Navigator screenOptions={{ headerShown: false }}>
           <AuthStack.Screen name="Register" component={Register} />
           <AuthStack.Screen name="Login" component={Login} />
           <AuthStack.Screen name="ForgotPassword" component={ForgotPassword} />

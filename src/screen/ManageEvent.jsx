@@ -23,7 +23,7 @@ const ManageEvent = ({ navigation }) => {
   );
   const deleteAction = async eventsItem => {
     try {
-      await http(token).delete(`/event/manage/${eventsItem}`);
+      await http(token).delete(`/event/${eventsItem}`);
       setEvents(events.filter(eventitems => eventitems.id !== eventsItem));
     } catch (err) {
       const message = err?.response?.data?.message;
@@ -46,7 +46,7 @@ const ManageEvent = ({ navigation }) => {
           <Text></Text>
         </View>
       </View>
-      <View style={{ backgroundColor: 'white' }}>
+      <View style={{ backgroundColor: 'white', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
         <TouchableOpacity style={styles.buttonCreate}>
           <Text
             style={styles.buttonTextCreate}
@@ -64,7 +64,7 @@ const ManageEvent = ({ navigation }) => {
               <View style={styles.wrapperBoxEvents}>
                 <View style={styles.boxDateEvents}>
                   <View style={styles.DateWrapper}>
-                    <Text style={styles.TextDate}>{moment(items.date).format('DD')}</Text>
+                    <Text style={globalStyles.textColor}>{moment(items.date).format('DD')}</Text>
                     <Text style={globalStyles.textColor}>{moment(items.date).format('ddd')}</Text>
                   </View>
                 </View>
@@ -87,7 +87,7 @@ const ManageEvent = ({ navigation }) => {
                       style={globalStyles.textColor}>
                       Update
                     </Text>
-                    <Text onPress={() => deleteAction(items.id)} style={globalStyles.textColor}>
+                    <Text onPress={() => deleteAction(items.id)} style={{ color: 'red' }}>
                       Delete
                     </Text>
                   </View>
@@ -116,11 +116,20 @@ const styles = StyleSheet.create({
   wrapperBoxEvents: {
     flexDirection: 'row',
     gap: 30,
-    paddingTop: 30,
+    padding: 30,
+    backgroundColor: 'white',
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1,
   },
   boxDateEvents: {
     flexDirection: 'column',
     gap: 20,
+  },
+  DateWrapper: {
+    borderColor: '#0E8388',
+    borderWidth: 2,
+    padding: 10,
+    borderRadius: 10,
   },
   boxContentEvent: {
     flexDirection: 'column',

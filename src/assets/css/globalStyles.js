@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const globalStyles = StyleSheet.create({
   wrapper: {
@@ -81,7 +81,7 @@ const globalStyles = StyleSheet.create({
   textColor: {
     color: 'black',
   },
-  textPrimary: {color: '#0E8388'},
+  textPrimary: { color: '#0E8388' },
   textForgotPassword: {
     fontSize: 18,
     fontWeight: '600',
@@ -126,7 +126,7 @@ const globalStyles = StyleSheet.create({
     paddingHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 35,
+    paddingVertical: 45,
   },
   containerChild: {
     backgroundColor: '#0E8388',
@@ -167,10 +167,13 @@ const globalStyles = StyleSheet.create({
     width: 130,
     height: 130,
     backgroundColor: 'yellow',
-    borderRadius: 50,
+    borderRadius: 80,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
+    borderBlockColor: 'red',
+    borderWidth: 5,
+    borderColor: '#0E8388',
   },
   name: {
     fontSize: 24,
@@ -317,9 +320,14 @@ const globalStyles = StyleSheet.create({
   },
   wrapperTitleText: {
     position: 'absolute',
-    top: 120,
-    left: 25,
+    top: 0,
+    left: 0,
     gap: 10,
+    height: '100%',
+    width: '100%',
+    paddingLeft: 25,
+    paddingTop: 140,
+    backgroundColor: 'transparent',
   },
   wrapperTitleTextHome: {
     position: 'absolute',
@@ -343,7 +351,7 @@ const globalStyles = StyleSheet.create({
     gap: 10,
     justifyContent: 'center',
     shadowColor: 'black',
-    shadowOffset: {width: 0, height: 3},
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.7,
     shadowRadius: 10,
     elevation: 4,
@@ -395,7 +403,7 @@ const globalStyles = StyleSheet.create({
     height: 85,
     backgroundColor: 'white',
     shadowColor: 'black',
-    shadowOffset: {width: 0, height: 3},
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.7,
     shadowRadius: 10,
     elevation: 4,
