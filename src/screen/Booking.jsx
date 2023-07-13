@@ -1,105 +1,199 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import globalStyles from '../assets/css/globalStyles';
 import Headers from '../components/Headers';
+import Alert from '../components/Alert';
+import http from '../helpers/https';
+import { useSelector } from 'react-redux';
+// import FAwesome from 'react-native-vector-icons/FontAwesome';
+import FAwesome from 'react-native-vector-icons/FontAwesome';
 
-const Booking = () => {
+const Booking = ({ route }) => {
   const navigation = useNavigation();
   const bookingSeat = require('../assets/img/Booking.png');
+  const { id } = route.params;
+  const token = useSelector(state => state.auth.token);
+  const [message, setMessage] = React.useState('');
+  const [errorMessage, setErrorMessage] = React.useState('');
+  const [section, setSection] = React.useState([]);
+  const [valueQuantity, setValueQuantity] = React.useState({
+    id: 0,
+    quantity: 0,
+  });
+  console.log(route.params);
+
+  React.useEffect(() => {
+    async function getSection() {
+      try {
+        const { data } = await http(token).get('/section');
+        console.log(data);
+        setSection(data.results);
+      } catch (error) {
+        const message = error?.response?.data?.message;
+        if (message) {
+          console.log(message);
+        }
+      }
+    }
+    getSection();
+  }, [token]);
+
+  function reduceQuantity(id) {
+    const quantityMinus = valueQuantity.quantity - 1;
+    if (quantityMinus < 0) {
+      setMessage('min 1 tickets');
+    } else {
+      setValueQuantity({
+        id,
+        quantity: quantityMinus,
+      });
+      setMessage(' ');
+    }
+  }
+
+  function addQuantity(id) {
+    const quantityPlus = valueQuantity.quantity + 1;
+    if (quantityPlus > 5) {
+      setMessage('Max your buy is 5 Tickets');
+    } else {
+      setValueQuantity({
+        id,
+        quantity: quantityPlus,
+      });
+      setMessage(' ');
+      setErrorMessage('');
+    }
+  }
+
+  const selectSection = valueQuantity && section.filter(event => event.id === valueQuantity.id)[0];
+
+  const actionBooking = async () => {
+    setErrorMessage('');
+    try {
+      const body = new URLSearchParams({
+        sectionId: valueQuantity.id,
+        quantity: valueQuantity.quantity,
+        eventId: id,
+      }).toString();
+      if (valueQuantity.quantity === 0) {
+        setErrorMessage('you must buy min 1 tickets');
+      } else {
+        const { data } = await http(token).post('/reservation', body);
+        console.log(data);
+        if (message === 'create reservation succesfully') {
+          navigation.replace('Payment', {
+            DataBooking: {
+              eventId: id,
+              eventName: data.results.events.tittle,
+              reservationId: data.results.id,
+              sectionName: data.results.sections,
+              quantity: data.results.quantity,
+              totalPayment: data.results.totalPayment,
+            },
+          });
+        }
+      }
+    } catch (error) {
+      const msg = error?.response?.data?.message;
+      console.log(msg);
+      setErrorMessage(msg);
+    }
+  };
   return (
-    <View style={globalStyles.containerTitleNav}>
-      <Headers onPress={() => navigation.navigate('DetailEvent')}>
-        Booking
-      </Headers>
-      <View>
-        <View style={globalStyles.wrapperContent}>
-          <View style={style.contPrice}>
-            <View style={style.sectCont}>
-              <Image source={bookingSeat} />
-            </View>
-            <View style={style.contOut}>
-              <View style={style.contOne}>
-                <Text style={style.textTic}>Tickets</Text>
-                <View>
-                  <Text style={style.textTic2}>BY PRICE</Text>
-                </View>
-                <View />
-              </View>
-              <View style={style.contItem}>
-                <View style={style.contIcon} />
-                <View style={style.contSect}>
-                  <View>
-                    <Text style={style.textSect}>Sect Reg, ROW 2</Text>
-                    <Text style={style.contSeat}>12 Seats available</Text>
-                  </View>
-                  <Text style={style.contQuty}>Quantity</Text>
-                </View>
-                <View style={style.contPriceOut}>
-                  <View style={style.priceOut}>
-                    <Text style={style.textSect}>$15</Text>
-                    <Text style={globalStyles.textColor}>/person</Text>
-                  </View>
-                  <View style={style.count}>
-                    <TouchableOpacity style={style.countMin}>
-                      <Text style={globalStyles.textColor}>-</Text>
-                    </TouchableOpacity>
-                    <Text style={globalStyles.textColor}>0</Text>
-                    <TouchableOpacity style={style.countMin}>
-                      <Text style={globalStyles.textColor}>+ </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-              <View style={style.contItem}>
-                <View style={style.contIcon2} />
-                <View style={style.contSect}>
-                  <View>
-                    <Text style={style.textSect}>Sect Reg, ROW 1</Text>
-                    <Text style={style.contSeat}>12 Seats available</Text>
-                  </View>
-                  <Text style={style.contQuty}>Quantity</Text>
-                </View>
-                <View style={style.contPriceOut}>
-                  <View style={style.priceOut}>
-                    <Text style={style.textSect}>$15</Text>
-                    <Text style={globalStyles.textColor}>/person</Text>
-                  </View>
-                  <View style={style.count}>
-                    <TouchableOpacity style={style.countMin}>
-                      <Text style={globalStyles.textColor}>-</Text>
-                    </TouchableOpacity>
-                    <Text style={globalStyles.textColor}>0</Text>
-                    <TouchableOpacity style={style.countMin}>
-                      <Text style={globalStyles.textColor}>+</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </View>
+    <ScrollView style={globalStyles.containerTitleNav} horizontal={false}>
+      <Headers onPress={() => navigation.navigate('DetailEvent')}>Booking</Headers>
+
+      <View style={globalStyles.container}>
+        <View style={style.contPrice}>
+          <View style={style.sectCont}>
+            <Image source={bookingSeat} />
           </View>
-          <View style={style.checkOut}>
-            <View>
-              <View style={style.results}>
-                <Text style={style.reslutsText}>VIP</Text>
-                <Text>-</Text>
-                <Text style={style.reslutsText}>2</Text>
-                <Text>-</Text>
-                <Text style={style.reslutsText}>$70</Text>
+          <View style={style.contOut}>
+            <View style={style.contOne}>
+              <View>
+                <Text style={style.textTic}>Tickets</Text>
               </View>
-              <View style={style.getOwnCont}>
-                <Text style={style.getOwn}>Get now on Urticket</Text>
+              <View>
+                <Text style={style.textTic2}>BY PRICE</Text>
               </View>
             </View>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Payment')}
-              style={style.touchCheckOut}>
-              <Text style={style.textCheckout}>Checkout</Text>
-            </TouchableOpacity>
+            {section.map(items => {
+              return (
+                <View key={`section${items.id}`} style={style.contItem}>
+                  <View style={style.contIcon}>
+                    <View style={style.contSect}>
+                      <View>
+                        <Text style={style.textSect}>Sect {items.name}, ROW 2</Text>
+                        <Text style={style.contSeat}>12 Seats available</Text>
+                      </View>
+                      <Text style={style.contQuty}>Quantity</Text>
+                    </View>
+                  </View>
+                  <View style={style.contPriceOut}>
+                    <View style={style.priceOut}>
+                      <Text style={style.textSect}>{items.price}</Text>
+                      <Text style={globalStyles.textColor}>/person</Text>
+                    </View>
+                    <View style={style.count}>
+                      <TouchableOpacity onPress={() => reduceQuantity(items.id)} style={style.countMin}>
+                        <Text style={globalStyles.textColor}>-</Text>
+                      </TouchableOpacity>
+                      <Text
+                        style={{
+                          color: '#9ca3af',
+                          fontSize: 16,
+                          fontWeight: '600',
+                        }}>
+                        {items.id === valueQuantity.id ? valueQuantity.quantity : 0}
+                      </Text>
+                      <TouchableOpacity style={style.countMin}>
+                        <Text onPress={() => addQuantity(items.id)} style={globalStyles.textColor}>
+                          +
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    {message === 'min 1 tickets' && (
+                      <Text
+                        style={{
+                          color: 'red',
+                          textAlign: 'right',
+                        }}>
+                        {message}
+                      </Text>
+                    )}
+                    {message === 'Max Your Buy is 5 Tickets' && (
+                      <Text
+                        style={{
+                          color: 'red',
+                          textAlign: 'right',
+                        }}>
+                        {message}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              );
+            })}
+            {errorMessage && <Alert>{errorMessage}</Alert>}
           </View>
         </View>
+        <View style={style.checkOut}>
+          <View style={{ padding: 5 }}>
+            <Text style={style.results}>
+              {selectSection?.name || '-'} . <FAwesome name="ticket" size={15} style={{ color: '#9ca3af' }} />
+              {valueQuantity.quantity} . Rp,- {selectSection?.price * valueQuantity.quantity || '0'}
+            </Text>
+            <View style={style.getOwnCont}>
+              <Text style={style.getOwn}>Get now on Urticket</Text>
+            </View>
+          </View>
+          <TouchableOpacity onPress={actionBooking} style={style.touchCheckOut}>
+            <Text style={style.textCheckout}>Checkout</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -114,20 +208,14 @@ const style = StyleSheet.create({
   },
   contPrice: {
     backgroundColor: 'white',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    borderTopStartRadius: 20,
     paddingTop: 30,
-    paddingHorizontal: 30,
+    paddingHorizontal: 0,
   },
   chechText: {
     fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
-  },
-  contCheck: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 30,
   },
   sectCont: {
     width: '100%',
@@ -139,14 +227,19 @@ const style = StyleSheet.create({
     borderRadius: 30,
   },
   contOut: {
-    paddingVertical: 20,
-    gap: 15,
+    padding: 20,
+    gap: 10,
+    width: '100%',
+    backgroundColor: 'white',
   },
   contOne: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: 5,
+    width: '100%',
+    backgroundColor: 'white',
+    paddingRight: 20,
+    paddingVertical: 20,
   },
   textTic: {
     fontSize: 24,
@@ -159,10 +252,12 @@ const style = StyleSheet.create({
   },
   contItem: {
     flexDirection: 'row',
-    gap: 14,
+    gap: 10,
+    width: '100%',
+    paddingHorizontal: 1,
   },
   contIcon: {
-    width: 45,
+    width: 250,
     height: 45,
     backgroundColor: '#F1EAFF',
     borderRadius: 10,
@@ -190,8 +285,7 @@ const style = StyleSheet.create({
     color: 'black',
   },
   contPriceOut: {
-    // justifyContent: 'center',
-    // alignItems: 'center',
+    backgroundColor: 'green',
     gap: 10,
   },
   priceOut: {
@@ -228,7 +322,7 @@ const style = StyleSheet.create({
     gap: 25,
     justifyContent: 'center',
     shadowColor: 'black',
-    shadowOffset: {width: 0, height: -3},
+    shadowOffset: { width: 0, height: -3 },
     shadowOpacity: 1,
     shadowRadius: 1,
     elevation: 7,
@@ -239,6 +333,7 @@ const style = StyleSheet.create({
     gap: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    color: 'black',
   },
   reslutsText: {
     fontSize: 18,
@@ -260,10 +355,12 @@ const style = StyleSheet.create({
   },
   getOwn: {
     fontSize: 12,
+    color: 'black',
   },
   getOwnCont: {
     justifyContent: 'center',
     alignItems: 'center',
+    color: 'black',
   },
 });
 export default Booking;
