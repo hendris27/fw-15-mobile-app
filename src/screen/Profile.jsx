@@ -1,10 +1,10 @@
-import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import globalStyles from '../assets/css/globalStyles';
 import Headers from '../components/Headers';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import http from '../helpers/https';
 
 const Profile = () => {
@@ -15,12 +15,31 @@ const Profile = () => {
 
   React.useEffect(() => {
     const getProfile = async () => {
-      const {data} = await http(token).get('/profile');
+      const { data } = await http(token).get('/profile');
       console.log(data);
       setProfile(data.results);
     };
     getProfile();
   }, [token]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchProfile = async () => {
+        try {
+          const { data } = await http(token).get('/profile');
+          console.log(data.results);
+          setProfile(data.results);
+        } catch (error) {
+          const message = error?.response?.data?.message;
+          if (message) {
+            console.log(message);
+          }
+        }
+      };
+      fetchProfile();
+    }, [token]),
+  );
+
   return (
     <ScrollView style={globalStyles.containerTitleNav}>
       <Headers>Profil</Headers>
@@ -28,17 +47,15 @@ const Profile = () => {
         <View style={globalStyles.wrapperProfileName}>
           <View style={globalStyles.foto}>
             <View style={globalStyles.fotoProfil}>
-              {!profile.picture && (
-                <Image style={globalStyles.img} source={defaultimg} />
-              )}
               {profile.picture && (
                 <Image
                   style={globalStyles.img}
                   source={{
-                    uri: profile.picture,
+                    uri: profile?.picture,
                   }}
                 />
               )}
+              {!profile.picture && <Image style={globalStyles.img} source={defaultimg} />}
             </View>
           </View>
           <View style={globalStyles.wrapperProfileName}>
@@ -58,16 +75,10 @@ const Profile = () => {
           <ScrollView horizontal={true}>
             <View style={globalStyles.cardMember}>
               <View style={globalStyles.cardMemberDetail}>
-                <Image
-                  source={require('../assets/img/card.png')}
-                  style={globalStyles.img}
-                />
+                <Image source={require('../assets/img/card.png')} style={globalStyles.img} />
               </View>
               <View style={globalStyles.cardMemberDetail}>
-                <Image
-                  source={require('../assets/img/card.png')}
-                  style={globalStyles.img}
-                />
+                <Image source={require('../assets/img/card.png')} style={globalStyles.img} />
               </View>
             </View>
           </ScrollView>
@@ -77,8 +88,7 @@ const Profile = () => {
                 <View>
                   <FeatherIcon name="edit-3" size={25} color="black" />
                 </View>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('EditProfile')}>
+                <TouchableOpacity onPress={() => navigation.navigate('EditProfile')}>
                   <Text style={globalStyles.textTitleNav}>Edit Profile</Text>
                 </TouchableOpacity>
               </View>
@@ -91,11 +101,11 @@ const Profile = () => {
                 <View>
                   <FeatherIcon name="unlock" size={25} color="black" />
                 </View>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('ChangePassword')}>
+                <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
                   <Text style={globalStyles.textTitleNav}>Change Password</Text>
                 </TouchableOpacity>
               </View>
+
               <TouchableOpacity>
                 <FeatherIcon name="arrow-right" size={25} color="black" />
               </TouchableOpacity>

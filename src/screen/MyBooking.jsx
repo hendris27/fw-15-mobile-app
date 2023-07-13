@@ -1,45 +1,29 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import globalStyles from '../assets/css/globalStyles';
-import Headers from '../components/Headers';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
 const MyBooking = () => {
   return (
     <ScrollView style={globalStyles.containerChild}>
-      <Headers>My Booking</Headers>
-      <View style={style.mainContent}>
+      <View style={globalStyles.navContainerChild}>
+        <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
+          <FeatherIcon name="arrow-left" size={25} color="#FFF" />
+        </TouchableOpacity>
+        <View>
+          <Text style={globalStyles.textTitleWhite}>My Booking</Text>
+        </View>
+        <View>
+          <Text />
+        </View>
+      </View>
+      <View style={style.wrapperContent}>
         <View style={style.month}>
           <View>
             <Text style={style.textMonth}>March</Text>
           </View>
         </View>
-        <View style={style.contItemValue}>
-          <View style={style.mainContentDetail}>
-            <View style={style.dateContent}>
-              <View style={style.textContDay}>
-                <Text style={style.textDay}>15</Text>
-                <Text>Wed</Text>
-              </View>
-            </View>
-            <View style={style.titleEvent}>
-              <View>
-                <Text style={style.textTitle}>Sight & Sound Exhibition</Text>
-              </View>
-              <View style={style.titleTime}>
-                <Text>Jakarta, Indonesia</Text>
-                <Text>Wed, 15 Nov, 4.00 PM</Text>
-              </View>
-              <TouchableOpacity>
-                <Text style={style.textDetail}>Detail</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+        <View style={style.wrapperItem}>
           <View style={style.mainContentDetail}>
             <View style={style.dateContent}>
               <View style={style.textContDay}>
@@ -100,7 +84,7 @@ const style = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
-  mainContent: {
+  wrapperContent: {
     backgroundColor: 'white',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -129,7 +113,7 @@ const style = StyleSheet.create({
     height: 85,
     backgroundColor: 'white',
     shadowColor: 'black',
-    shadowOffset: {width: 0, height: 3},
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.7,
     shadowRadius: 10,
     elevation: 4,
@@ -160,7 +144,7 @@ const style = StyleSheet.create({
   textDetail: {
     color: 'blue',
   },
-  contItemValue: {
+  wrapperItem: {
     gap: 40,
   },
 });

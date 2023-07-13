@@ -1,18 +1,25 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from 'react-native';
 import React from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import globalStyles from '../assets/css/globalStyles';
 import Headers from '../components/Headers';
 import Alert from '../components/Alert';
 import http from '../helpers/https';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 // import FAwesome from 'react-native-vector-icons/FontAwesome';
 import FAwesome from 'react-native-vector-icons/FontAwesome';
 
-const Booking = ({ route }) => {
+const Booking = ({route}) => {
   const navigation = useNavigation();
   const bookingSeat = require('../assets/img/Booking.png');
-  const { id } = route.params;
+  const {id} = route.params;
   const token = useSelector(state => state.auth.token);
   const [message, setMessage] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
@@ -26,7 +33,7 @@ const Booking = ({ route }) => {
   React.useEffect(() => {
     async function getSection() {
       try {
-        const { data } = await http(token).get('/section');
+        const {data} = await http(token).get('/section');
         console.log(data);
         setSection(data.results);
       } catch (error) {
@@ -66,7 +73,8 @@ const Booking = ({ route }) => {
     }
   }
 
-  const selectSection = valueQuantity && section.filter(event => event.id === valueQuantity.id)[0];
+  const selectSection =
+    valueQuantity && section.filter(event => event.id === valueQuantity.id)[0];
 
   const actionBooking = async () => {
     setErrorMessage('');
@@ -79,9 +87,9 @@ const Booking = ({ route }) => {
       if (valueQuantity.quantity === 0) {
         setErrorMessage('you must buy min 1 tickets');
       } else {
-        const { data } = await http(token).post('/reservation', body);
+        const {data} = await http(token).post('/reservation', body);
         console.log(data);
-        if (message === 'create reservation succesfully') {
+        if (data.results) {
           navigation.replace('Payment', {
             DataBooking: {
               eventId: id,
@@ -102,7 +110,9 @@ const Booking = ({ route }) => {
   };
   return (
     <ScrollView style={globalStyles.containerTitleNav} horizontal={false}>
-      <Headers onPress={() => navigation.navigate('DetailEvent')}>Booking</Headers>
+      <Headers onPress={() => navigation.navigate('DetailEvent')}>
+        Booking
+      </Headers>
 
       <View style={globalStyles.container}>
         <View style={style.contPrice}>
@@ -124,7 +134,9 @@ const Booking = ({ route }) => {
                   <View style={style.contIcon}>
                     <View style={style.contSect}>
                       <View>
-                        <Text style={style.textSect}>Sect {items.name}, ROW 2</Text>
+                        <Text style={style.textSect}>
+                          Sect {items.name}, ROW 2
+                        </Text>
                         <Text style={style.contSeat}>12 Seats available</Text>
                       </View>
                       <Text style={style.contQuty}>Quantity</Text>
@@ -136,7 +148,9 @@ const Booking = ({ route }) => {
                       <Text style={globalStyles.textColor}>/person</Text>
                     </View>
                     <View style={style.count}>
-                      <TouchableOpacity onPress={() => reduceQuantity(items.id)} style={style.countMin}>
+                      <TouchableOpacity
+                        onPress={() => reduceQuantity(items.id)}
+                        style={style.countMin}>
                         <Text style={globalStyles.textColor}>-</Text>
                       </TouchableOpacity>
                       <Text
@@ -145,10 +159,14 @@ const Booking = ({ route }) => {
                           fontSize: 16,
                           fontWeight: '600',
                         }}>
-                        {items.id === valueQuantity.id ? valueQuantity.quantity : 0}
+                        {items.id === valueQuantity.id
+                          ? valueQuantity.quantity
+                          : 0}
                       </Text>
                       <TouchableOpacity style={style.countMin}>
-                        <Text onPress={() => addQuantity(items.id)} style={globalStyles.textColor}>
+                        <Text
+                          onPress={() => addQuantity(items.id)}
+                          style={globalStyles.textColor}>
                           +
                         </Text>
                       </TouchableOpacity>
@@ -179,10 +197,12 @@ const Booking = ({ route }) => {
           </View>
         </View>
         <View style={style.checkOut}>
-          <View style={{ padding: 5 }}>
+          <View style={{padding: 5}}>
             <Text style={style.results}>
-              {selectSection?.name || '-'} . <FAwesome name="ticket" size={15} style={{ color: '#9ca3af' }} />
-              {valueQuantity.quantity} . Rp,- {selectSection?.price * valueQuantity.quantity || '0'}
+              {selectSection?.name || '-'} .{' '}
+              <FAwesome name="ticket" size={15} style={{color: '#9ca3af'}} />
+              {valueQuantity.quantity} . Rp,-{' '}
+              {selectSection?.price * valueQuantity.quantity || '0'}
             </Text>
             <View style={style.getOwnCont}>
               <Text style={style.getOwn}>Get now on Urticket</Text>
@@ -322,7 +342,7 @@ const style = StyleSheet.create({
     gap: 25,
     justifyContent: 'center',
     shadowColor: 'black',
-    shadowOffset: { width: 0, height: -3 },
+    shadowOffset: {width: 0, height: -3},
     shadowOpacity: 1,
     shadowRadius: 1,
     elevation: 7,

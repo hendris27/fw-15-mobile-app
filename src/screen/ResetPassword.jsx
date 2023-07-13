@@ -54,6 +54,7 @@ const ResetPassword = () => {
       }, 3000);
     }
   }
+  
 
   return (
     <View style={styles.wrapper}>

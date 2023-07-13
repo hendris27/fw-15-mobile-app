@@ -38,9 +38,9 @@ const Home = ({navigation}) => {
     saveToken();
   }, [saveToken]);
 
-  React.useEffect(()=>{
-SplashScreen.hide()
-  },[])
+  React.useEffect(() => {
+    SplashScreen.hide();
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -236,7 +236,9 @@ SplashScreen.hide()
           );
         })}
         {eventCategoriesData.length <= 0 && (
-          <Text style={globalStyles.textColor}>Data Category Not Found</Text>
+          <Text style={{color: 'red', fontWeight: 700}}>
+            Data Category Not Found
+          </Text>
         )}
       </ScrollView>
     </View>

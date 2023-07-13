@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:748759431382:android:d39c9aacef714bf7b2f177",
+        "mobilesdk_app_id": "1:748759431382:android:1bbaa69e63b99166b2f177",
         "android_client_info": {
-          "package_name": "com.testapp"
+          "package_name": "com.dri.eventorganizing"
         }
       },
       "oauth_client": [
