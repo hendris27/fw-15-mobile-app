@@ -47,8 +47,8 @@ const DetailsEvents = ({ route, ...rest }) => {
   async function addWishlists() {
     try {
       const eventId = { eventId: id };
-      const eventDetail = new URLSearchParams(eventId).toString();
-      const { data } = await http(token).post('/wishlist', eventDetail);
+      const eventDetailId = new URLSearchParams(eventId).toString();
+      const { data } = await http(token).post('/wishlist', eventDetailId);
       console.log(data);
       if (wishlistButton) {
         setWishlistButton(false);
@@ -76,7 +76,7 @@ const DetailsEvents = ({ route, ...rest }) => {
   //   }
   // };
 
-  async function doPayments() {
+  async function actionBooking() {
     const eventId = id;
     const statusId = 1;
     const paymentMethodId = 1;
@@ -87,7 +87,7 @@ const DetailsEvents = ({ route, ...rest }) => {
     }).toString();
     const { data } = await http(token).post('/reservation', body);
     if (data.success === true) {
-      navigation.navigate('Payment', {
+      navigation.navigate('Booking', {
         reservationId: data.results.reservation.id,
         eventTitle: data.results.tittle,
       });
@@ -158,7 +158,7 @@ const DetailsEvents = ({ route, ...rest }) => {
               </View>
             </View>
             <View style={style.touchButton}>
-              <TouchableOpacity onPress={() => navigation.navigate('Booking', { id })}>
+              <TouchableOpacity onPress={actionBooking}>
                 <Text style={style.textTouch}>Buy Tickets</Text>
               </TouchableOpacity>
             </View>
