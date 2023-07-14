@@ -6,14 +6,12 @@ import Headers from '../components/Headers';
 import Alert from '../components/Alert';
 import http from '../helpers/https';
 import { useSelector } from 'react-redux';
-// import FAwesome from 'react-native-vector-icons/FontAwesome';
 import FAwesome from 'react-native-vector-icons/FontAwesome';
 
 const Booking = ({ route }) => {
   const navigation = useNavigation();
   const bookingSeat = require('../assets/img/Booking.png');
   const { id } = route.params;
-  console.log(id);
   const token = useSelector(state => state.auth.token);
   const [message, setMessage] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
@@ -282,7 +280,6 @@ const style = StyleSheet.create({
     color: 'black',
   },
   contPriceOut: {
-    backgroundColor: 'green',
     gap: 10,
   },
   priceOut: {
