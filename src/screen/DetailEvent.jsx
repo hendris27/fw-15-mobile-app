@@ -13,28 +13,29 @@ import LinearGradient from 'react-native-linear-gradient';
 const DetailsEvents = ({ route, ...rest }) => {
   const navigation = useNavigation();
   const { id } = route.params;
-  const [events, setEvents] = React.useState([]);
+  console.log(id);
+
+  const [events, setEvents] = React.useState({});
   const token = useSelector(state => state.auth.token);
   const [wishlistButton, setWishlistButton] = React.useState(false);
   const [wishlist, setWishlist] = React.useState([]);
 
+  React.useEffect(() => {
+    const getEventData = async () => {
+      const { data } = await http().get(`/event/${id}`);
+      setEvents(data.results);
+    };
+    if (id) {
+      getEventData(id);
+    }
+  }, [id]);
+  console.log(events);
   useFocusEffect(
     React.useCallback(() => {
-      async function getEventDetails() {
-        const { data } = await http().get(`/event/${id}`);
-        setEvents(data.results);
-      }
-
-      getEventDetails();
-    }, []),
-  );
-  useFocusEffect(
-    React.useCallback(() => {
-      const eventId = { eventId: id };
-      const qString = new URLSearchParams(eventId).toString();
       const fetchData = async () => {
-        const { data } = await http(token).get(`/wishlist/check?${qString}`);
-        const btnStatus = data.results;
+        const { data } = await http(token).get(`/wishlist/${id}`);
+        const btnStatus = data.status;
+        console.log(data.status);
         if (btnStatus) {
           setWishlistButton(true);
         } else {
@@ -48,7 +49,7 @@ const DetailsEvents = ({ route, ...rest }) => {
     try {
       const eventId = { eventId: id };
       const eventDetailId = new URLSearchParams(eventId).toString();
-      const { data } = await http(token).post('/wishlist', eventDetailId);
+      const { data } = await http(token).post('/wishlist/', eventDetailId);
       console.log(data);
       if (wishlistButton) {
         setWishlistButton(false);
