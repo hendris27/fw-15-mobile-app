@@ -42,13 +42,14 @@ const UpdateEvent = ({ navigation, route }) => {
   useFocusEffect(
     React.useCallback(() => {
       async function getEvents() {
-        const { data } = await http(token).get(`/event/${eventId}`);
+        const { data } = await http(token).get(`/event/manage/${eventId}`);
         setEvents(data.results);
       }
 
       getEvents();
-    }, []),
+    }, [token, eventId]),
   );
+  console.log(eventId, 'eventId');
 
   React.useEffect(() => {
     async function getCategory() {
@@ -89,7 +90,7 @@ const UpdateEvent = ({ navigation, route }) => {
         uri: Platform.OS === 'android' ? data.uri : data.uri.replace('file://', ''),
       });
     }
-    setFilePicture(data.uri);
+    // setFilePicture(data.uri);
   };
 
   category.map(dataCategory => {
@@ -124,24 +125,27 @@ const UpdateEvent = ({ navigation, route }) => {
     if (date) {
       form.append('date', moment(date).format('DD-MM-YYYY'));
     }
-    const fileImage = {
-      uri: filePicture,
-      type: 'image/jpeg',
-      name: 'image' + '-' + Date.now() + '.jpg',
-    };
-    if (filePicture) {
-      form.append('picture', fileImage);
+
+    if (filePicture.length > 1) {
+      form.append('picture', filePicture);
     }
+    if (filePicture) {
+      form.append('picture', filePicture);
+    }
+    if (selectedPicture) {
+      form.append('picture', selectedPicture);
+    }
+    console.log(form);
     try {
       const { data } = await http(token).patch(`/event/manageupdate/${eventId}`, form, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      if (data.success === true) {
-        navigation.navigate('ManageEvent');
-      }
-      console.log(data);
+
+      navigation.navigate('ManageEvent');
+
+      console.log(data, 'a');
     } catch (err) {
       console.warn(err);
     }
@@ -170,8 +174,11 @@ const UpdateEvent = ({ navigation, route }) => {
       <View style={{ backgroundColor: 'white' }}>
         <Formik
           initialValues={{
-            tittle: events.tittle,
-            descriptions: events.descriptions,
+            tittle: events?.tittle,
+            descriptions: events?.descriptions,
+            date: events?.date,
+            cityId: events?.cityId,
+            categoryId: events?.categoryId,
           }}
           onSubmit={actionUpdate}>
           {({ values, handleBlur, handleChange, handleSubmit }) => {
