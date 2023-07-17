@@ -1,26 +1,18 @@
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
-import {Button} from 'react-native-paper';
+import { View, Text, Image, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { Button } from 'react-native-paper';
 
-import React, {useCallback} from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
+import React, { useCallback } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
 import globalStyles from '../assets/css/globalStyles';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import http from '../helpers/https';
 import moment from 'moment';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen';
 
-const Home = ({navigation}) => {
+const Home = ({ navigation }) => {
   const defaultimg = require('../assets/img/default-profile.jpg');
   const [events, setEvents] = React.useState([]);
   const [eventCategories, setEventCategories] = React.useState([]);
@@ -30,7 +22,7 @@ const Home = ({navigation}) => {
   const deviceToken = useSelector(state => state.deviceToken.data);
   const token = useSelector(state => state.auth.token);
   const saveToken = useCallback(async () => {
-    const form = new URLSearchParams({token: deviceToken.token});
+    const form = new URLSearchParams({ token: deviceToken.token });
     await http(token).post('/device-token', form.toString());
   }, [deviceToken, token]);
 
@@ -46,7 +38,7 @@ const Home = ({navigation}) => {
     React.useCallback(() => {
       async function getDataEvent() {
         try {
-          const {data} = await http().get('/event?limit=10');
+          const { data } = await http().get('/event?limit=5');
           setEvents(data.results);
         } catch (error) {
           const message = error?.response?.data?.message;
@@ -60,16 +52,16 @@ const Home = ({navigation}) => {
   );
 
   async function getEventByCategory(name) {
-    const {data} = await http(token).get('/event', {
-      params: {searchByCategory: name},
+    const { data } = await http(token).get('/event?limit=3', {
+      params: { searchByCategory: name },
     });
     setEventCategoriesData(data.results);
   }
 
   async function getEventByName(search) {
     const eventdata = await http(token).get('/event?limit=20');
-    const {data} = await http(token).get('/event', {
-      params: {searchByName: search},
+    const { data } = await http(token).get('/event', {
+      params: { searchByName: search },
     });
     if (search === '') {
       setEvents(eventdata.data.results);
@@ -80,7 +72,7 @@ const Home = ({navigation}) => {
   useFocusEffect(
     React.useCallback(() => {
       async function getEventCategories() {
-        let {data} = await http(token).get('/category?limit=7');
+        let { data } = await http(token).get('/category?limit=3');
         setEventCategories(data.results);
       }
 
@@ -123,17 +115,8 @@ const Home = ({navigation}) => {
         <ScrollView horizontal={true} style={globalStyles.wrapperBox}>
           {events.map(event => {
             return (
-              <TouchableOpacity
-                key={`events-detail${event.id}`}
-                onPress={() => {
-                  navigation.navigate('DetailEvent', {
-                    id: event.id,
-                  });
-                }}
-                style={globalStyles.boxEvent}>
-                {!event.picture && (
-                  <Image style={globalStyles.img} source={defaultimg} />
-                )}
+              <TouchableOpacity key={`events-detail${event.id}`} style={globalStyles.boxEvent}>
+                {!event.picture && <Image style={globalStyles.img} src={defaultimg} />}
                 {event.picture && (
                   <Image
                     style={globalStyles.img}
@@ -144,13 +127,15 @@ const Home = ({navigation}) => {
                 )}
 
                 <View style={globalStyles.wrapperTitleTextHome}>
-                  <Text style={globalStyles.textTitleDetail}>
-                    {moment(event.date).format('LLLL')}
-                  </Text>
-                  <Text style={globalStyles.textTitleMain}>
-                    {event?.tittle}
-                  </Text>
-                  <TouchableOpacity style={globalStyles.btnArrowRight}>
+                  <Text style={globalStyles.textTitleDetail}>{moment(event.date).format('LLLL')}</Text>
+                  <Text style={globalStyles.textTitleMain}>{event?.tittle}</Text>
+                  <TouchableOpacity
+                    style={globalStyles.btnArrowRight}
+                    onPress={() => {
+                      navigation.navigate('DetailEvent', {
+                        id: event.id,
+                      });
+                    }}>
                     <View>
                       <FeatherIcon name="arrow-right" size={30} color="white" />
                     </View>
@@ -159,9 +144,7 @@ const Home = ({navigation}) => {
               </TouchableOpacity>
             );
           })}
-          {events.length <= 1 && (
-            <Text style={globalStyles.textColor}>Data Not found!</Text>
-          )}
+          {events.length <= 1 && <Text style={globalStyles.textColor}>Data Not found!</Text>}
         </ScrollView>
         <View>
           <Text style={globalStyles.textTitleDiscover}>Discover</Text>
@@ -170,10 +153,8 @@ const Home = ({navigation}) => {
           {eventCategories.map(eventCat => {
             return (
               <View key={eventCat.id}>
-                <TouchableOpacity
-                  style={style.boxEventCategories}
-                  onPress={() => getEventByCategory(eventCat.name)}>
-                  <Text style={{color: 'black'}}>{eventCat.name}</Text>
+                <TouchableOpacity style={style.boxEventCategories} onPress={() => getEventByCategory(eventCat.name)}>
+                  <Text style={{ color: 'black' }}>{eventCat.name}</Text>
                 </TouchableOpacity>
               </View>
             );
@@ -188,21 +169,13 @@ const Home = ({navigation}) => {
             <View key={item.id} style={globalStyles.eventUpcoming}>
               <View style={globalStyles.upcomingTextCont}>
                 <View style={globalStyles.textContDay}>
-                  <Text style={globalStyles.textDay}>
-                    {moment(item.date).format('DD')}
-                  </Text>
-                  <Text style={globalStyles.textDay}>
-                    {moment(item.date).format('ddd')}
-                  </Text>
+                  <Text style={globalStyles.textDay}>{moment(item.date).format('DD')}</Text>
+                  <Text style={globalStyles.textDay}>{moment(item.date).format('ddd')}</Text>
                 </View>
               </View>
               <View horizontal={true} style={globalStyles.wrapperBox}>
-                <View
-                  key={`events-detail${item.id}`}
-                  style={globalStyles.boxEvent}>
-                  {!item.picture && (
-                    <Image style={globalStyles.img} source={defaultimg} />
-                  )}
+                <View key={`events-detail${item.id}`} style={globalStyles.boxEvent}>
+                  {!item.picture && <Image style={globalStyles.img} src={defaultimg} />}
                   {item.picture && (
                     <Image
                       style={globalStyles.img}
@@ -213,32 +186,26 @@ const Home = ({navigation}) => {
                   )}
 
                   <View style={globalStyles.wrapperTitleTextHome}>
-                    <Text style={globalStyles.textTitleDetail}>
-                      {moment(item.date).format('LLLL')}
-                    </Text>
-                    <Text style={globalStyles.textTitleMain}>
-                      {item?.tittle}
-                    </Text>
+                    <Text style={globalStyles.textTitleDetail}>{moment(item.date).format('LLLL')}</Text>
+                    <Text style={globalStyles.textTitleMain}>{item?.tittle}</Text>
                   </View>
                 </View>
-              </View>
-              <View>
-                <Button
-                  style={{
-                    backgroundColor: '#19a7ce',
-                    borderRadius: 8,
-                    marginTop: 110,
-                  }}>
-                  <Text style={globalStyles.textColor}>Show All 5 Events</Text>
-                </Button>
               </View>
             </View>
           );
         })}
+        <View>
+          <Button
+            style={{
+              backgroundColor: '#19a7ce',
+              borderRadius: 8,
+              marginTop: 110,
+            }}>
+            <Text style={globalStyles.textColor}>Show All 5 Events</Text>
+          </Button>
+        </View>
         {eventCategoriesData.length <= 0 && (
-          <Text style={{color: 'red', fontWeight: 700}}>
-            Data Category Not Found
-          </Text>
+          <Text style={{ color: 'red', fontWeight: 700 }}>Data Category Not Found</Text>
         )}
       </ScrollView>
     </View>

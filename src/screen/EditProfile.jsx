@@ -191,7 +191,7 @@ const EditProfile = ({ navigation }) => {
                     <Icon name="user" size={70} color="blue" />
                   )}
 
-                  {profile?.picture === null && <Image style={globalStyles.img} source={defaultimg} />}
+                  {/* {profile?.picture === null && <Image style={globalStyles.img} source={defaultimg} />} */}
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                   <TouchableOpacity

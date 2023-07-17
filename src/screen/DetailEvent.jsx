@@ -29,13 +29,11 @@ const DetailsEvents = ({ route, ...rest }) => {
       getEventData(id);
     }
   }, [id]);
-  console.log(events);
   useFocusEffect(
     React.useCallback(() => {
       const fetchData = async () => {
         const { data } = await http(token).get(`/wishlist/${id}`);
         const btnStatus = data.status;
-        console.log(data.status);
         if (btnStatus) {
           setWishlistButton(true);
         } else {
@@ -45,12 +43,12 @@ const DetailsEvents = ({ route, ...rest }) => {
       fetchData();
     }, [token, id]),
   );
+  console.log(wishlistButton);
   async function addWishlists() {
     try {
       const eventId = { eventId: id };
       const eventDetailId = new URLSearchParams(eventId).toString();
       const { data } = await http(token).post('/wishlist/', eventDetailId);
-      console.log(data);
       if (wishlistButton) {
         setWishlistButton(false);
       } else {
@@ -76,11 +74,11 @@ const DetailsEvents = ({ route, ...rest }) => {
             <FeatherIcon name="arrow-left" size={30} color="white" />
           </View>
           <View>
-            <TouchableOpacity onPress={addWishlists}>
+            <TouchableOpacity onPress={() => addWishlists(id)}>
               {wishlistButton === true ? (
-                <AntDesignIcon name="hearto" size={30} color="white" />
-              ) : (
                 <AntDesignIcon name="heart" size={30} color="red" />
+              ) : (
+                <AntDesignIcon name="hearto" size={30} color="white" />
               )}
             </TouchableOpacity>
           </View>

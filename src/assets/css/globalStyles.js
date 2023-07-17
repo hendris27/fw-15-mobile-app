@@ -121,12 +121,14 @@ const globalStyles = StyleSheet.create({
     justifyContent: 'space-between',
     position: 'absolute',
     top: 10,
+    zIndex: 1,
   },
   navContainerChild: {
     paddingHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 45,
+    backgroundColor: '#0E8388',
   },
   containerChild: {
     backgroundColor: '#0E8388',

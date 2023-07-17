@@ -2,10 +2,27 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import React from 'react';
 import globalStyles from '../assets/css/globalStyles';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import { useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
+import http from '../helpers/https';
+import moment from 'moment';
 
-const MyBooking = () => {
+const MyBooking = ({ navigation }) => {
+  const [history, setHistory] = React.useState([]);
+  const token = useSelector(state => state.auth.token);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function getHistoryBooking() {
+        const { data } = await http(token).get('/history');
+        setHistory(data.results);
+      }
+
+      getHistoryBooking();
+    }, []),
+  );
   return (
-    <ScrollView style={globalStyles.containerChild}>
+    <View style={globalStyles.containerChild}>
       <View style={globalStyles.navContainerChild}>
         <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
           <FeatherIcon name="arrow-left" size={25} color="#FFF" />
@@ -17,56 +34,54 @@ const MyBooking = () => {
           <Text />
         </View>
       </View>
-      <View style={style.wrapperContent}>
-        <View style={style.month}>
-          <View>
-            <Text style={style.textMonth}>March</Text>
+      <ScrollView>
+        <View style={style.wrapperContent}>
+          <View style={style.month}>
+            <Text>March</Text>
           </View>
-        </View>
-        <View style={style.wrapperItem}>
-          <View style={style.mainContentDetail}>
-            <View style={style.dateContent}>
-              <View style={style.textContDay}>
-                <Text style={style.textDay}>15</Text>
-                <Text>Wed</Text>
-              </View>
-            </View>
-            <View style={style.titleEvent}>
+          {history.length < 1 && (
+            <View style={style.noEventContainer}>
+              <Text style={style.noEventText}>No tickets bought</Text>
               <View>
-                <Text style={style.textTitle}>Sight & Sound Exhibition</Text>
-              </View>
-              <View style={style.titleTime}>
-                <Text>Jakarta, Indonesia</Text>
-                <Text>Wed, 15 Nov, 4.00 PM</Text>
-              </View>
-              <TouchableOpacity>
-                <Text style={style.textDetail}>Detail</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={style.mainContentDetail}>
-            <View style={style.dateContent}>
-              <View style={style.textContDay}>
-                <Text style={style.textDay}>15</Text>
-                <Text>Wed</Text>
+                <Text style={style.noEventSubText}>It seems you haven't "bought any ticket yet.</Text>
+                <Text style={style.noEventSubText}>you can explore everything here.</Text>
+                <Text style={style.noEventSubText}>do you want to try it?</Text>
               </View>
             </View>
-            <View style={style.titleEvent}>
-              <View>
-                <Text style={style.textTitle}>Sight & Sound Exhibition</Text>
+          )}
+          {history.map(item => {
+            return (
+              <View key={item.id} style={style.wrapperItem}>
+                <View style={style.mainContentDetail}>
+                  <View style={style.dateContent}>
+                    <View style={style.textContDay}>
+                      <Text style={style.textDay}>{moment(item.date).format('DD')}</Text>
+                      <View>
+                        <Text style={style.textDay}>{moment(item.date).format('ddd')}</Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View style={style.titleEvent}>
+                    <View>
+                      <Text style={style.textTitle}>{item.tittle}</Text>
+                    </View>
+                    <View>
+                      <Text style={style.FontStyle}>{item.name}</Text>
+                    </View>
+                    <View style={style.titleTime}>
+                      <Text>{moment(item.date).format('LLLL')}</Text>
+                    </View>
+                    <TouchableOpacity>
+                      <Text style={style.textDetail}>Detail</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
-              <View style={style.titleTime}>
-                <Text>Jakarta, Indonesia</Text>
-                <Text>Wed, 15 Nov, 4.00 PM</Text>
-              </View>
-              <TouchableOpacity>
-                <Text style={style.textDetail}>Detail</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+            );
+          })}
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -146,6 +161,18 @@ const style = StyleSheet.create({
   },
   wrapperItem: {
     gap: 40,
+  },
+  noEventSubText: {
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 12,
+    textTransform: 'capitalize',
+    textAlign: 'center',
+    color: 'black',
+  },
+  noEventContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 10,
   },
 });
 export default MyBooking;

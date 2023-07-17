@@ -114,8 +114,9 @@ const CreateEvent = ({ navigation }) => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      if (data.success === true) {
-      }
+
+      navigation.navigate('ManageEvent');
+
       console.log(data);
     } catch (err) {
       console.warn(err);
@@ -267,6 +268,7 @@ const CreateEvent = ({ navigation }) => {
                       placeholderTextColor="gray"
                       onChangeText={handleChange('descriptions')}
                       onBlur={handleBlur('descriptions')}
+                      style={{ color: 'black' }}
                       value={values.descriptions}></TextInput>
                   </View>
                 </View>

@@ -83,6 +83,7 @@ const Booking = ({ route }) => {
             dataBooking: {
               eventId: id,
               reservationId: data.results.reservationId,
+              totalPayment: data.results.totalPayment,
             },
           });
         }
