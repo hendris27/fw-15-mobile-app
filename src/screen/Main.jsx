@@ -19,6 +19,7 @@ import Profile from './Profile';
 import MyBooking from './MyBooking';
 import ManageEvent from './ManageEvent';
 import CreateEvent from './CreateEvent';
+import UpdateEvent from './UpdateEvent';
 import Booking from './Booking';
 import MyWishlist from './MyWishlist';
 import EditProfile from './EditProfile';
@@ -156,6 +157,17 @@ function DrawerComponent() {
             display: 'none',
           },
           drawerLabel: 'Create Event',
+        }}
+      />
+      <Drawer.Screen
+        name="UpdateEvent"
+        component={UpdateEvent}
+        options={{
+          drawerIcon: ({ color, size }) => <FeatherIcon name="user" color={color} size={size} />,
+          drawerItemStyle: {
+            display: 'none',
+          },
+          drawerLabel: 'Update Event',
         }}
       />
       <Drawer.Screen
