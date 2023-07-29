@@ -13,7 +13,6 @@ const Payment = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { dataBooking } = route.params;
-  console.log(dataBooking);
 
   const token = useSelector(state => state.auth.token);
 
