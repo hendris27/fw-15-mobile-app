@@ -60,7 +60,7 @@ const globalStyles = StyleSheet.create({
   },
   inputComponentsDashboard: {
     flex: 1,
-    color: 'Black',
+    color: 'black',
   },
   textTitle: {
     color: 'black',
@@ -280,7 +280,7 @@ const globalStyles = StyleSheet.create({
     fontWeight: '700',
   },
   textTitleDiscover: {
-    color: 'black',
+    color: 'blue',
     fontSize: 30,
     fontWeight: '700',
     padding: 30,
@@ -340,6 +340,7 @@ const globalStyles = StyleSheet.create({
   wrapperBox: {
     flexDirection: 'row',
     gap: 10,
+    paddingHorizontal: 10,
   },
   wrapperBoxNew: {
     margin: 10,
