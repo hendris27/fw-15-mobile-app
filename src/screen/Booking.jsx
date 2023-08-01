@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import React from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import globalStyles from '../assets/css/globalStyles';
 import Headers from '../components/Headers';
 import Alert from '../components/Alert';
@@ -20,7 +20,6 @@ const Booking = ({ route }) => {
     id: 0,
     quantity: 0,
   });
-  // console.log(route.params);
 
   React.useEffect(() => {
     async function getSection() {
@@ -74,6 +73,7 @@ const Booking = ({ route }) => {
         quantity: valueQuantity.quantity,
         eventId: id,
       }).toString();
+
       if (valueQuantity.quantity === 0) {
         setErrorMessage('you must buy min 1 tickets');
       } else {
@@ -178,7 +178,8 @@ const Booking = ({ route }) => {
           <View style={{ padding: 5 }}>
             <Text style={style.results}>
               {selectSection?.name || '-'} . <FAwesome name="ticket" size={15} style={{ color: '#9ca3af' }} />
-              {valueQuantity.quantity} . Rp,- {selectSection?.price * valueQuantity.quantity || '0'}
+              {valueQuantity.quantity} Total Price = Rp,-{selectSection?.price * valueQuantity?.quantity || '0'}
+              {console.log(valueQuantity?.quantity)}
             </Text>
             <View style={style.getOwnCont}>
               <Text style={style.getOwn}>Get now on Urticket</Text>
