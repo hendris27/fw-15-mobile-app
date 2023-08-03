@@ -1,18 +1,16 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faXmark} from '@fortawesome/free-solid-svg-icons';
-import {useFocusEffect} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { useFocusEffect } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import globalStyles from '../assets/css/globalStyles';
 import http from '../helpers/https';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
-
-
-const MyWishlists = () => {
+const MyWishlists = ({ navigation }) => {
   const [wishlist, setWishlist] = useState([]);
   const token = useSelector(state => state.auth.token);
 
@@ -20,7 +18,7 @@ const MyWishlists = () => {
     React.useCallback(() => {
       async function getWishlists() {
         try {
-          const {data} = await http(token).get('/wishlist');
+          const { data } = await http(token).get('/wishlist');
           setWishlist(data.results);
         } catch (err) {
           console.warn(err);
@@ -33,7 +31,7 @@ const MyWishlists = () => {
 
   const doDelete = async itemId => {
     try {
-      await http (token).delete(`/wishlist/managedeleted/${itemId}`);
+      await http(token).delete(`/wishlist/managedeleted/${itemId}`);
       setWishlist(wishlist.filter(items => items.id !== itemId));
     } catch (err) {
       const message = err?.response?.data?.message;
@@ -47,9 +45,9 @@ const MyWishlists = () => {
   return (
     <View style={globalStyles.containerTitleNav}>
       <View style={globalStyles.navContainerChild}>
-        <View>
-          <FeatherIcon name="arrow-left" size={25} color="white" />
-        </View>
+        <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
+          <FeatherIcon name="arrow-left" size={25} color="#FFF" />
+        </TouchableOpacity>
         <View>
           <Text style={globalStyles.textTitleWhite}>My Wishlist</Text>
         </View>
@@ -57,25 +55,17 @@ const MyWishlists = () => {
           <Text />
         </View>
       </View>
-      <ScrollView style={{backgroundColor:'white'}}>
-    
+      <ScrollView style={{ backgroundColor: 'white' }}>
         {wishlist.map(items => {
           return (
             <View style={styles.ManageWrapperStyle} key={items.id}>
-              
               <View style={styles.ManageWrapperChildStyle}>
                 <View style={styles.DateWrapper}>
-                  <Text style={styles.TextDate}>
-                    {moment(items.date).format('DD')}
-                  </Text>
-                  <Text style={globalStyles.textColor}>
-                    {moment(items.date).format('ddd')}
-                  </Text>
+                  <Text style={styles.TextDate}>{moment(items.date).format('DD')}</Text>
+                  <Text style={globalStyles.textColor}>{moment(items.date).format('ddd')}</Text>
                 </View>
-                <TouchableOpacity
-                  style={styles.HeartWrapper}
-                  onPress={() => doDelete(items.id)}>
-                           <FeatherIcon name="trash-2" size={25} color="red" />
+                <TouchableOpacity style={styles.HeartWrapper} onPress={() => doDelete(items.id)}>
+                  <FeatherIcon name="trash-2" size={25} color="red" />
                 </TouchableOpacity>
               </View>
               <View style={styles.TitleWrapper}>
@@ -87,31 +77,27 @@ const MyWishlists = () => {
                     <Text style={globalStyles.textColor}>{items.location}</Text>
                   </View>
                   <View>
-                    <Text style={globalStyles.textColor}>
-                      {moment(items.date).format('LLL')}
-                    </Text>
+                    <Text style={globalStyles.textColor}>{moment(items.date).format('LLL')}</Text>
                   </View>
                 </View>
               </View>
-           
             </View>
-            
           );
         })}
-          {wishlist.length <= 0 && (
-                <View>
-                  <Text
-                    style={{
-                      fontFamily: 'Poppins-Medium',
-                      fontSize: 20,
-                      textAlign: 'center',
-                      marginTop: 20,
-                      color:'red'
-                    }}>
-                    Data Wishlist Empty!
-                  </Text>
-                </View>
-              )}
+        {wishlist.length <= 0 && (
+          <View>
+            <Text
+              style={{
+                fontFamily: 'Poppins-Medium',
+                fontSize: 20,
+                textAlign: 'center',
+                marginTop: 20,
+                color: 'red',
+              }}>
+              Data Wishlist Empty!
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -125,8 +111,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingRight: 40,
     paddingLeft: 40,
-    backgroundColor:'white'
-  }, 
+    backgroundColor: 'white',
+  },
   ManageWrapperChildStyle: {
     display: 'flex',
     flexDirection: 'column',
