@@ -177,17 +177,20 @@ const Booking = ({ route }) => {
         <View style={style.checkOut}>
           <View style={{ padding: 5 }}>
             <Text style={style.results}>
-              {selectSection?.name || '-'} . <FAwesome name="ticket" size={15} style={{ color: '#9ca3af' }} />
-              {valueQuantity.quantity} Total Price = Rp,-{selectSection?.price * valueQuantity?.quantity || '0'}
-              {console.log(valueQuantity?.quantity)}
+              {selectSection?.name || '-'} . <FAwesome name="ticket" size={15} style={{ color: '#9ca3af' }} /> ={' '}
+              {valueQuantity.quantity}
             </Text>
             <View style={style.getOwnCont}>
-              <Text style={style.getOwn}>Get now on Urticket</Text>
+              <Text style={style.getOwn}>
+                Total Price = Rp,-{selectSection?.price * valueQuantity?.quantity || '0'}
+              </Text>
             </View>
           </View>
-          <TouchableOpacity onPress={actionBooking} style={style.touchCheckOut}>
-            <Text style={style.textCheckout}>Checkout</Text>
-          </TouchableOpacity>
+          <View style={{ padding: 5 }}>
+            <TouchableOpacity onPress={actionBooking} style={style.touchCheckOut}>
+              <Text style={style.textCheckout}>Checkout</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </ScrollView>
@@ -252,12 +255,13 @@ const style = StyleSheet.create({
     gap: 10,
     width: '100%',
     paddingHorizontal: 1,
+    backgroundColor: '#F1EAFF',
   },
   contIcon: {
     width: 250,
     height: 45,
-    backgroundColor: '#F1EAFF',
     borderRadius: 10,
+    flex: 1,
   },
   contIcon2: {
     width: 45,
@@ -275,6 +279,7 @@ const style = StyleSheet.create({
   },
   contSeat: {
     opacity: 0.7,
+    color: 'black',
   },
   contQuty: {
     fontSize: 16,
@@ -312,17 +317,18 @@ const style = StyleSheet.create({
   checkOut: {
     backgroundColor: 'white',
     flexDirection: 'row',
-    padding: 20,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    gap: 25,
-    justifyContent: 'center',
+    justifyContent: 'between',
     shadowColor: 'black',
     shadowOffset: { width: 0, height: -3 },
     shadowOpacity: 1,
     shadowRadius: 1,
     elevation: 7,
     marginBottom: 50,
+    paddingHorizontal: 20,
+    width: 'full',
+    gap: 80,
   },
   results: {
     flexDirection: 'row',
@@ -338,7 +344,7 @@ const style = StyleSheet.create({
   },
   touchCheckOut: {
     backgroundColor: '#0E8388',
-    width: 169,
+    width: 120,
     height: 40,
     borderRadius: 15,
     justifyContent: 'center',
