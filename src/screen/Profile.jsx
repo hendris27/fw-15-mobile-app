@@ -42,7 +42,17 @@ const Profile = () => {
 
   return (
     <ScrollView style={globalStyles.containerTitleNav}>
-      <Headers>Profil</Headers>
+      <View style={globalStyles.navContainerChild}>
+        <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
+          <FeatherIcon name="arrow-left" size={25} color="#FFF" />
+        </TouchableOpacity>
+        <View>
+          <Text style={globalStyles.textTitleWhite}>Profile</Text>
+        </View>
+        <View>
+          <Text />
+        </View>
+      </View>
       <View style={globalStyles.wrapperContent}>
         <View style={globalStyles.wrapperProfileName}>
           <View style={globalStyles.foto}>
