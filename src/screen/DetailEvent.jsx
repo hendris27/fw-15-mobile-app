@@ -31,9 +31,11 @@ const DetailsEvents = ({ route, ...rest }) => {
   }, [id]);
   useFocusEffect(
     React.useCallback(() => {
+      const eventId = { eventId: id };
+      const CheckData = new URLSearchParams(eventId).toString();
       const fetchData = async () => {
-        const { data } = await http(token).get(`/wishlist/${id}`);
-        const btnStatus = data.status;
+        const { data } = await http(token).get(`/wishlist/check?${CheckData}`);
+        const btnStatus = data.results;
         if (btnStatus) {
           setWishlistButton(true);
         } else {
@@ -43,12 +45,11 @@ const DetailsEvents = ({ route, ...rest }) => {
       fetchData();
     }, [token, id]),
   );
-  console.log(wishlistButton);
   async function addWishlists() {
     try {
       const eventId = { eventId: id };
       const eventDetailId = new URLSearchParams(eventId).toString();
-      const { data } = await http(token).post('/wishlist/', eventDetailId);
+      await http(token).post('/wishlist/', eventDetailId);
       if (wishlistButton) {
         setWishlistButton(false);
       } else {
@@ -68,7 +69,27 @@ const DetailsEvents = ({ route, ...rest }) => {
   return (
     <View style={style.container}>
       <View style={globalStyles.boxEventDetail}>
-        <Image style={globalStyles.img} source={{ uri: events.picture }} />
+        {/* <Image style={globalStyles.img} source={{ uri: events.picture }} /> */}
+
+        {events?.picture === null && (
+          <Image
+            style={globalStyles.img}
+            source={{
+              uri:
+                events?.picture === null
+                  ? 'https://res.cloudinary.com/your_cloud_name/image/upload/default_image.jpg' // Replace 'your_cloud_name' with your actual Cloudinary cloud name and 'default_image.jpg' with the default image URL
+                  : events.picture,
+            }}
+          />
+        )}
+        {events?.picture && (
+          <Image
+            style={globalStyles.img}
+            source={{
+              uri: events.picture,
+            }}
+          />
+        )}
         <View style={globalStyles.navContainerEventDetail}>
           <View>
             <FeatherIcon name="arrow-left" size={30} color="white" />
