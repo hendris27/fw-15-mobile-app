@@ -70,8 +70,8 @@ function CustomDrawerContent(props) {
       <View style={globalStyles.containerProfileDrawwer}>
         <View style={globalStyles.fotoDrawwer}>
           <View style={globalStyles.fotoIcon}>
-            {profile?.picture === null && <Image style={globalStyles.img} source={defaultimg} />}
-            {profile?.picture !== null && (
+            {profile?.picture === null && <FontAwesome5Icon name="users" color="#61677A" size={20} />}
+            {profile?.picture && (
               <Image
                 style={globalStyles.img}
                 source={{
