@@ -30,7 +30,7 @@ const EditProfile = ({ navigation }) => {
   const [profession, setProfession] = React.useState('');
   const [fileResponse, setFileResponse] = React.useState([]);
   const [profile, setProfile] = React.useState([]);
-  const defaultimg = require('../assets/img/default-profile.jpg');
+  // const defaultimg = require('../assets/img/default-profile.jpg');
   const [selectedPicture, setSelectedPicture] = React.useState();
 
   const getImage = async source => {
@@ -210,7 +210,7 @@ const EditProfile = ({ navigation }) => {
                         color: 'white',
                         padding: 5,
                       }}>
-                      From Galeri
+                      Take Picture
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -229,7 +229,7 @@ const EditProfile = ({ navigation }) => {
                         color: 'white',
                         padding: 5,
                       }}>
-                      Take Picture
+                      From File
                     </Text>
                   </TouchableOpacity>
                 </View>
