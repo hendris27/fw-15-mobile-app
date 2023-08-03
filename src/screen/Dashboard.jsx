@@ -13,12 +13,10 @@ import { useSelector } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen';
 
 const Home = ({ navigation }) => {
-  const defaultimg = require('../assets/img/default-profile.jpg');
   const [events, setEvents] = React.useState([]);
   const [eventCategories, setEventCategories] = React.useState([]);
   const [eventCategoriesData, setEventCategoriesData] = React.useState([]);
   const [search, setSearch] = React.useState('');
-
   const deviceToken = useSelector(state => state.deviceToken.data);
   const token = useSelector(state => state.auth.token);
   const saveToken = useCallback(async () => {
@@ -38,7 +36,7 @@ const Home = ({ navigation }) => {
     React.useCallback(() => {
       async function getDataEvent() {
         try {
-          const { data } = await http().get('/event?limit=5');
+          const { data } = await http().get('/event?limit=10');
           setEvents(data.results);
         } catch (error) {
           const message = error?.response?.data?.message;
@@ -52,7 +50,7 @@ const Home = ({ navigation }) => {
   );
 
   async function getEventByCategory(name) {
-    const { data } = await http(token).get('/event?limit=3', {
+    const { data } = await http(token).get('/event?limit=10', {
       params: { searchByCategory: name },
     });
     setEventCategoriesData(data.results);
@@ -72,7 +70,7 @@ const Home = ({ navigation }) => {
   useFocusEffect(
     React.useCallback(() => {
       async function getEventCategories() {
-        let { data } = await http(token).get('/category?limit=3');
+        let { data } = await http(token).get('/category?limit=10');
         setEventCategories(data.results);
       }
 
@@ -116,7 +114,14 @@ const Home = ({ navigation }) => {
           {events.map(event => {
             return (
               <TouchableOpacity key={`events-detail${event.id}`} style={globalStyles.boxEvent}>
-                {!event.picture && <Image style={globalStyles.img} src={defaultimg} />}
+                {/* {!event.picture && (
+                  <Image
+                    style={globalStyles.img}
+                    source={{
+                      uri: 'https://res.cloudinary.com/dxs0yxeyr/image/upload/v1690689477/demo/dry/1690689475628.png',
+                    }}
+                  />
+                )} */}
                 {event.picture && (
                   <Image
                     style={globalStyles.img}
@@ -175,7 +180,14 @@ const Home = ({ navigation }) => {
               </View>
               <View horizontal={true} style={globalStyles.wrapperBox}>
                 <View key={`events-detail${item.id}`} style={globalStyles.boxEvent}>
-                  {!item.picture && <Image style={globalStyles.img} src={defaultimg} />}
+                  {/* {!item.picture && (
+                    <Image
+                      style={globalStyles.img}
+                      source={{
+                        uri: 'https://res.cloudinary.com/dxs0yxeyr/image/upload/v1690689477/demo/dry/1690689475628.png',
+                      }}
+                    />
+                  )} */}
                   {item.picture && (
                     <Image
                       style={globalStyles.img}
@@ -218,7 +230,7 @@ const style = StyleSheet.create({
     borderRadius: 30,
     elevation: 5,
     shadowColor: '#52006A',
-    backgroundColor: 'gray',
+    backgroundColor: '#F2BE22',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
