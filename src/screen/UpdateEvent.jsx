@@ -31,9 +31,9 @@ const UpdateEvent = ({ navigation, route }) => {
   const [selectedPicture, setSelectedPicture] = React.useState();
   const defaultimgEvent = require('../assets/img/defaultIMGEvent.png');
   const { eventId } = route.params;
-  const [editLocation, setEditLocation] = React.useState(false);
   const [events, setEvents] = React.useState([]);
   const [editTitle, setEditTitle] = React.useState(false);
+  const [editLocation, setEditLocation] = React.useState(false);
   const [editCategory, setEditCategory] = React.useState(false);
   const [editDescription, setEditDescription] = React.useState(false);
   const [editDate, setEditDate] = React.useState(false);
